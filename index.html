@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otome Shimai — Sisters Who Play Otome Games</title>
+<meta name="description" content="Otome Shimai is a podcast by two sisters, Vka &amp; Vki, who have been playing otome games together for 15+ years. Episodes, game walkthroughs, and more.">
+<link rel="icon" href="assets/icons/favicon.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#23b4ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* hero: the Buzzsprout banner on its exact background blue, so it blends edge-to-edge.
+     The blue padding-bottom matches the intro card's negative margin, so the card
+     overlaps plain blue — never the artwork — at any viewport width. */
+  :root { --overlap: 48px; }
+  .hero {
+    background: var(--sky);
+    text-align: center;
+    padding-bottom: var(--overlap);
+  }
+  .hero img.banner {
+    display: block;
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  /* intro card overlapping the hero */
+  .intro {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+    margin-top: calc(-1 * var(--overlap));
+    position: relative;
+  }
+  .intro .cover {
+    width: 210px;
+    height: 210px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    flex-shrink: 0;
+  }
+  .intro h1 {
+    font-size: 2.6rem;
+    margin: 0 0 0.2rem;
+  }
+  .intro .kanji {
+    font-family: var(--font-display);
+    color: var(--sky);
+    font-size: 1.15rem;
+    margin: 0 0 0.7rem;
+  }
+  .intro p.about { margin: 0; }
+
+  @media (max-width: 640px) {
+    :root { --overlap: 34px; }
+    .intro { flex-direction: column; text-align: center; }
+    .intro .cover { width: 170px; height: 170px; }
+    .intro h1 { font-size: 2rem; }
+  }
+
+  /* episode cards */
+  .episode {
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .episode .play {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--sky);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    text-decoration: none;
+    padding-left: 4px;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .episode .play:hover { background: var(--deep); transform: scale(1.08); }
+  .episode h3 { margin: 0 0 0.3rem; font-size: 1.15rem; }
+  .episode h3 a { color: inherit; text-decoration: none; }
+  .episode h3 a:hover { color: var(--deep); }
+  .episode .desc { margin: 0 0 0.45rem; font-size: 0.95rem; }
+  .episode .meta { font-size: 0.85rem; color: var(--muted); }
+  .episode .meta span + span::before { content: " • "; margin: 0 0.3em; color: var(--sky); }
+
+  #episodes .more { text-align: center; margin-top: 1.4rem; }
+
+  /* walkthrough teaser grid */
+  .walkthrough-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .walkthrough-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s;
+  }
+  .walkthrough-card:hover { transform: translateY(-3px); }
+  .walkthrough-card h3 { margin: 0 0 0.35rem; font-size: 1.12rem; color: #2a2a2c; }
+  .walkthrough-card p { margin: 0 0 0.5rem; font-size: 0.92rem; }
+  .walkthrough-card .tag {
+    font-size: 0.8rem;
+    color: #1b8fd0;
+    font-family: var(--font-display);
+  }
+  #walkthroughs .more { text-align: center; margin-top: 1.4rem; }
+
+  /* socials in footer */
+  .social-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .social-row .pill {
+    border-color: #fff;
+    background: transparent;
+    color: #fff;
+  }
+  .social-row .pill:hover { background: #fff; color: #1b8fd0; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="banner" src="assets/header.png" alt="Vka &amp; Vki — Sisters Who Play Otome Games">
+</header>
+
+<main class="wrap">
+
+  <section class="intro card">
+    <img class="cover" src="assets/cover.jpg" alt="Otome Shimai podcast artwork">
+    <div>
+      <h1>Otome Shimai</h1>
+      <p class="kanji">乙女姉妹 · a podcast by Vka &amp; Vki</p>
+      <p class="about">Two sisters who have been playing Otome games, both individually and
+        together, for 15+ years. We're always discussing the games we're playing and different
+        Otoge related subjects anyways, so we decided to turn it into a podcast!</p>
+    </div>
+  </section>
+
+  <section id="episodes">
+    <h2 class="section-title">Latest Episodes</h2>
+    <div id="episode-list" class="card">
+      <p class="muted">Loading the latest episodes…</p>
+    </div>
+    <p class="more"><a class="btn" href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">All episodes on Buzzsprout →</a></p>
+  </section>
+
+  <section id="walkthroughs">
+    <h2 class="section-title">Game Walkthroughs</h2>
+    <p>Text walkthroughs for the games we play — routes, choices, and how to reach every ending.</p>
+    <div id="walkthrough-list" class="walkthrough-grid"></div>
+    <p class="more"><a class="btn" href="walkthroughs/">Browse all walkthroughs →</a></p>
+  </section>
+
+  <section id="listen">
+    <h2 class="section-title">Listen Everywhere</h2>
+    <div class="pill-row">
+      <a class="pill" href="https://open.spotify.com/show/3LKLykojEvepBNo7Zlyr3P" target="_blank" rel="noopener"><span class="emoji">🎧</span>Spotify</a>
+      <a class="pill" href="https://www.youtube.com/channel/UCNLa1lq5IwqyrKC8jRm7GIQ" target="_blank" rel="noopener"><span class="emoji">▶️</span>YouTube Music</a>
+      <a class="pill" href="https://podcasts.apple.com/podcast/id1562576543" target="_blank" rel="noopener"><span class="emoji">🍎</span>Apple Podcasts</a>
+      <a class="pill" href="https://music.amazon.com/podcasts/946c6a86-d8b7-477e-99b6-6a9c7ac78339" target="_blank" rel="noopener"><span class="emoji">📦</span>Amazon Music</a>
+      <a class="pill" href="https://feeds.buzzsprout.com/1752627.rss" target="_blank" rel="noopener"><span class="emoji">📡</span>RSS Feed</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <h2 style="color:#fff; margin:0;">Come say hi! ✿</h2>
+  <div class="social-row">
+    <a class="pill" href="https://www.instagram.com/otomeshimai/" target="_blank" rel="noopener"><span class="emoji">📸</span>Instagram</a>
+    <a class="pill" href="https://twitter.com/OtomeShimai" target="_blank" rel="noopener"><span class="emoji">🐦</span>Twitter</a>
+    <a class="pill" href="https://bsky.app/profile/otomeshimai.bsky.social" target="_blank" rel="noopener"><span class="emoji">🦋</span>Bluesky</a>
+    <a class="pill" href="https://ko-fi.com/OtomeShimai" target="_blank" rel="noopener"><span class="emoji">☕</span>Ko-fi</a>
+  </div>
+  <p class="disclaimer">Disclaimer: None of the games or characters we are discussing belong to us.
+    Please don't sue us. Podcasting since 2021.</p>
+</footer>
+
+<script>
+const FEED_URL = "https://feeds.buzzsprout.com/1752627.rss";
+const EPISODE_COUNT = 6;
+
+function text(node, sel) {
+  const el = node.querySelector(sel);
+  return el ? el.textContent.trim() : "";
+}
+
+function stripHtml(html) {
+  const div = document.createElement("div");
+  // space at tag boundaries so "<b>SPOILERS</b>In this…" doesn't run together
+  div.innerHTML = html.replace(/</g, " <");
+  return (div.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function fmtDate(str) {
+  const d = new Date(str);
+  return isNaN(d) ? "" : d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+function fmtDuration(str) {
+  const secs = parseInt(str, 10);
+  if (isNaN(secs)) return str;
+  const h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60);
+  return h ? `${h}h ${m}m` : `${m} min`;
+}
+
+async function loadEpisodes() {
+  const box = document.getElementById("episode-list");
+  try {
+    const res = await fetch(FEED_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const xml = new DOMParser().parseFromString(await res.text(), "text/xml");
+    const items = [...xml.querySelectorAll("item")].slice(0, EPISODE_COUNT);
+    if (!items.length) throw new Error("no items");
+    box.innerHTML = "";
+    for (const item of items) {
+      const title = text(item, "title");
+      // the feed has no <link> element — build the episode page URL from the
+      // enclosure's slug (or the numeric guid as fallback)
+      const enclosure = item.querySelector("enclosure")?.getAttribute("url") || "";
+      const slug = (enclosure.match(/\/episodes\/([^/?#]+?)\.mp3/) || [])[1]
+        || (text(item, "guid").match(/\d+/) || [])[0];
+      const link = slug
+        ? "https://otomeshimai.buzzsprout.com/1752627/episodes/" + slug
+        : "https://otomeshimai.buzzsprout.com/";
+      const date = fmtDate(text(item, "pubDate"));
+      const duration = fmtDuration(item.getElementsByTagName("itunes:duration")[0]?.textContent || "");
+      const epNum = item.getElementsByTagName("itunes:episode")[0]?.textContent || "";
+      // Buzzsprout prepends a "Send us Fan Mail" link to every description — drop it
+      let desc = stripHtml(text(item, "description")).replace(/^Send us Fan Mail\s*/i, "");
+      if (desc.length > 220) desc = desc.slice(0, 220).replace(/\s+\S*$/, "") + "…";
+
+      const div = document.createElement("div");
+      div.className = "episode";
+      const meta = [date, epNum && "Episode " + epNum, duration].filter(Boolean)
+        .map(m => `<span>${m}</span>`).join("");
+      div.innerHTML = `
+        <a class="play" href="${link}" target="_blank" rel="noopener" aria-label="Listen to ${title}">▶</a>
+        <div>
+          <h3><a href="${link}" target="_blank" rel="noopener"></a></h3>
+          <p class="desc"></p>
+          <p class="meta">${meta}</p>
+        </div>`;
+      div.querySelector("h3 a").textContent = title;
+      div.querySelector(".desc").textContent = desc;
+      box.appendChild(div);
+    }
+  } catch (err) {
+    box.innerHTML = `<p class="muted">Couldn't load episodes right now — find them all on
+      <a href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">Buzzsprout</a>!</p>`;
+  }
+}
+
+async function loadWalkthroughs() {
+  const box = document.getElementById("walkthrough-list");
+  try {
+    const res = await fetch("walkthroughs/games.json");
+    const games = await res.json();
+    box.innerHTML = "";
+    for (const g of games.slice(0, 3)) {
+      const a = document.createElement("a");
+      a.className = "walkthrough-card card";
+      a.href = `walkthroughs/view.html?game=${encodeURIComponent(g.slug)}`;
+      a.innerHTML = `<h3></h3><p></p><span class="tag">Read the walkthrough →</span>`;
+      a.querySelector("h3").textContent = "✿ " + g.title;
+      a.querySelector("p").textContent = g.summary;
+      box.appendChild(a);
+    }
+  } catch (err) {
+    box.innerHTML = `<p class="muted">Walkthroughs coming soon!</p>`;
+  }
+}
+
+loadEpisodes();
+loadWalkthroughs();
+
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+</body>
+</html>

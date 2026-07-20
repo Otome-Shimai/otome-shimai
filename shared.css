@@ -1,0 +1,155 @@
+/* Otome Shimai — shared theme
+   Colors sampled from the Buzzsprout page + artwork:
+   sky #23B4FF (banner/cover bg), deep #3D57EE, page #FAFAFA */
+
+:root {
+  --sky: #23b4ff;
+  --sky-soft: #e3f4ff;
+  --deep: #3d57ee;
+  --bg: #fafafa;
+  --card: #ffffff;
+  --text: #4d4d4f;
+  --muted: #85868a;
+  --gold: #ffd45e;
+  --radius: 18px;
+  --shadow: 0 4px 16px rgba(35, 100, 160, 0.10);
+  --font-display: "Fredoka", "Nunito", sans-serif;
+  --font-body: "Nunito", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #2a2a2c;
+  line-height: 1.2;
+}
+
+a { color: var(--deep); }
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* section headings with a little plumeria bullet */
+.section-title {
+  font-size: 1.7rem;
+  margin: 2.6rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.section-title::before {
+  content: "✿";
+  color: var(--sky);
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.4rem 1.6rem;
+}
+
+/* pill buttons (listen / social links) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: var(--card);
+  border: 2px solid var(--sky);
+  color: #1b8fd0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.pill:hover {
+  background: var(--sky);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.pill .emoji { font-size: 1.1em; }
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1.3rem;
+  border-radius: 999px;
+  background: var(--sky);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+}
+.btn:hover { background: var(--deep); transform: translateY(-2px); }
+
+.muted { color: var(--muted); }
+
+/* simple site footer */
+.site-footer {
+  margin-top: 3.5rem;
+  padding: 2rem 20px 2.5rem;
+  background: var(--sky);
+  color: #fff;
+  text-align: center;
+}
+.site-footer a { color: #fff; }
+.site-footer .disclaimer {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  max-width: 620px;
+  margin: 0.8rem auto 0;
+}
+
+/* small top nav used on walkthrough pages */
+.mini-nav {
+  background: var(--sky);
+  padding: 0.7rem 20px;
+}
+.mini-nav .inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.mini-nav img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: block;
+}
+.mini-nav a.home {
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  text-decoration: none;
+}
+.mini-nav .crumb { color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }

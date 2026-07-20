@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walkthrough — Otome Shimai</title>
+<link rel="icon" href="../assets/icons/favicon.png">
+<meta name="theme-color" content="#23b4ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
+<style>
+  article.card { margin-top: 2rem; padding: 2rem 2.2rem; }
+  article h1 { font-size: 2rem; margin-top: 0; }
+  article h2 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid var(--sky-soft);
+  }
+  article h2::before { content: "✿ "; color: var(--sky); }
+  article h3 { font-size: 1.15rem; margin-top: 1.5rem; }
+  article code {
+    background: var(--sky-soft);
+    border-radius: 6px;
+    padding: 0.1em 0.4em;
+    font-size: 0.9em;
+  }
+  article pre {
+    background: var(--sky-soft);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+  }
+  article pre code { background: none; padding: 0; }
+  article blockquote {
+    margin: 1rem 0;
+    padding: 0.6rem 1.2rem;
+    border-left: 4px solid var(--sky);
+    background: var(--sky-soft);
+    border-radius: 0 12px 12px 0;
+  }
+  article blockquote p { margin: 0.3rem 0; }
+  article table { border-collapse: collapse; width: 100%; margin: 1rem 0; display: block; overflow-x: auto; }
+  article th, article td { border: 1px solid #d8ecfa; padding: 0.45rem 0.8rem; text-align: left; }
+  article th { background: var(--sky-soft); font-family: var(--font-display); font-weight: 500; }
+  article img { max-width: 100%; border-radius: 12px; }
+  article hr { border: none; border-top: 2px dashed var(--sky-soft); margin: 2rem 0; }
+  .backlink { margin: 1.5rem 0; display: inline-block; }
+  @media (max-width: 640px) { article.card { padding: 1.4rem 1.2rem; } }
+</style>
+</head>
+<body>
+
+<nav class="mini-nav">
+  <div class="inner">
+    <a href="../"><img src="../assets/cover.jpg" alt="Otome Shimai"></a>
+    <a class="home" href="../">Otome Shimai</a>
+    <span class="crumb">/ <a href="./" style="color:rgba(255,255,255,.85)">Walkthroughs</a></span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <article id="content" class="card">
+    <p class="muted">Loading walkthrough…</p>
+  </article>
+  <a class="backlink pill" href="./">← All walkthroughs</a>
+</main>
+
+<footer class="site-footer">
+  <p style="margin:0;">✿ <a href="../">Back to Otome Shimai</a> ✿</p>
+</footer>
+
+<script src="../md.js?v=2"></script>
+<script>
+(async () => {
+  const box = document.getElementById("content");
+  const slug = new URLSearchParams(location.search).get("game");
+  if (!slug || !/^[\w-]+$/.test(slug)) {
+    box.innerHTML = '<p class="muted">No walkthrough selected — pick one from the <a href="./">walkthrough list</a>.</p>';
+    return;
+  }
+  try {
+    const [mdRes, games] = await Promise.all([
+      fetch(slug + ".md"),
+      fetch("games.json").then(r => r.json()).catch(() => []),
+    ]);
+    if (!mdRes.ok) throw new Error("HTTP " + mdRes.status);
+    const meta = games.find(g => g.slug === slug);
+    if (meta) document.title = meta.title + " Walkthrough — Otome Shimai";
+    box.innerHTML = mdToHtml(await mdRes.text());
+  } catch (err) {
+    box.innerHTML = '<p class="muted">Couldn\'t find that walkthrough — try the <a href="./">walkthrough list</a>.</p>';
+  }
+})();
+</script>
+</body>
+</html>
