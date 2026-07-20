@@ -64,59 +64,71 @@
     .intro h1 { font-size: 2rem; }
   }
 
-  /* episode cards */
-  .episode {
-    display: flex;
-    gap: 1.1rem;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-  }
-  .episode .play {
-    flex-shrink: 0;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--sky);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    text-decoration: none;
-    padding-left: 4px;
-    transition: background 0.15s, transform 0.15s;
-  }
-  .episode .play:hover { background: var(--deep); transform: scale(1.08); }
-  .episode h3 { margin: 0 0 0.3rem; font-size: 1.15rem; }
-  .episode h3 a { color: inherit; text-decoration: none; }
-  .episode h3 a:hover { color: var(--deep); }
-  .episode .desc { margin: 0 0 0.45rem; font-size: 0.95rem; }
-  .episode .meta { font-size: 0.85rem; color: var(--muted); }
-  .episode .meta span + span::before { content: " • "; margin: 0 0.3em; color: var(--sky); }
-
-  #episodes .more { text-align: center; margin-top: 1.4rem; }
-
-  /* walkthrough teaser grid */
-  .walkthrough-grid {
+  /* two-column layout: posts + twitter on the left, episode player sidebar on the right */
+  .columns {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-areas:
+      "post side"
+      "twitter side";
+    align-content: start;
+    column-gap: 2rem;
   }
-  .walkthrough-card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.15s;
+  #latest-post { grid-area: post; }
+  #sidebar { grid-area: side; }
+  #twitter { grid-area: twitter; }
+  @media (max-width: 860px) {
+    .columns {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "post" "side" "twitter";
+    }
   }
-  .walkthrough-card:hover { transform: translateY(-3px); }
-  .walkthrough-card h3 { margin: 0 0 0.35rem; font-size: 1.12rem; color: #2a2a2c; }
-  .walkthrough-card p { margin: 0 0 0.5rem; font-size: 0.92rem; }
-  .walkthrough-card .tag {
-    font-size: 0.8rem;
+
+  /* featured latest post */
+  .featured-post { display: block; text-decoration: none; color: inherit; transition: transform 0.15s; }
+  .featured-post:hover { transform: translateY(-3px); }
+  .featured-post .type {
+    display: inline-block;
+    padding: 0.05rem 0.7rem;
+    border-radius: 999px;
+    background: var(--sky-soft);
     color: #1b8fd0;
     font-family: var(--font-display);
+    font-size: 0.82rem;
+    margin-bottom: 0.6rem;
+    text-transform: capitalize;
   }
-  #walkthroughs .more { text-align: center; margin-top: 1.4rem; }
+  .featured-post h3 { margin: 0 0 0.4rem; font-size: 1.45rem; }
+  .featured-post p { margin: 0 0 0.6rem; }
+  .featured-post .meta { font-size: 0.85rem; color: var(--muted); }
+  .featured-post .tag { display: block; margin-top: 0.6rem; font-family: var(--font-display); color: #1b8fd0; }
+  .more { text-align: center; margin-top: 1.3rem; }
+
+  /* latest-episode player card */
+  .player-card { text-align: center; }
+  .player-card img.ep-cover {
+    width: 130px;
+    height: 130px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 0.7rem;
+  }
+  .player-card h3 { margin: 0 0 0.35rem; font-size: 1.1rem; }
+  .player-card h3 a { color: inherit; text-decoration: none; }
+  .player-card h3 a:hover { color: var(--deep); }
+  .player-card .meta { font-size: 0.85rem; color: var(--muted); margin: 0 0 0.8rem; }
+  .player-card .meta span + span::before { content: " • "; margin: 0 0.3em; color: var(--sky); }
+  .player-card audio { width: 100%; margin-bottom: 0.9rem; }
+  .player-card .btn { display: block; margin-top: 0.5rem; }
+
+  /* listen-everywhere pills stack in the sidebar */
+  #sidebar .pill-row { flex-direction: column; align-items: stretch; }
+  #sidebar .pill { justify-content: center; }
+
+  /* twitter feed */
+  .twitter-card { padding: 0.9rem; }
+  .twitter-card .twitter-timeline { border-radius: 12px; }
+  .twitter-fallback { font-size: 0.9rem; text-align: center; margin: 0.8rem 0 0.3rem; }
 
   /* socials in footer */
   .social-row {
@@ -153,31 +165,43 @@
     </div>
   </section>
 
-  <section id="episodes">
-    <h2 class="section-title">Latest Episodes</h2>
-    <div id="episode-list" class="card">
-      <p class="muted">Loading the latest episodes…</p>
-    </div>
-    <p class="more"><a class="btn" href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">All episodes on Buzzsprout →</a></p>
-  </section>
+  <div class="columns">
 
-  <section id="walkthroughs">
-    <h2 class="section-title">Game Walkthroughs</h2>
-    <p>Text walkthroughs for the games we play — routes, choices, and how to reach every ending.</p>
-    <div id="walkthrough-list" class="walkthrough-grid"></div>
-    <p class="more"><a class="btn" href="walkthroughs/">Browse all walkthroughs →</a></p>
-  </section>
+    <section id="latest-post">
+      <h2 class="section-title">Latest Post</h2>
+      <div id="featured-post" class="card"><p class="muted">Loading…</p></div>
+      <p class="more"><a class="btn" href="blog/">Browse all posts →</a></p>
+    </section>
 
-  <section id="listen">
-    <h2 class="section-title">Listen Everywhere</h2>
-    <div class="pill-row">
-      <a class="pill" href="https://open.spotify.com/show/3LKLykojEvepBNo7Zlyr3P" target="_blank" rel="noopener"><span class="emoji">🎧</span>Spotify</a>
-      <a class="pill" href="https://www.youtube.com/channel/UCNLa1lq5IwqyrKC8jRm7GIQ" target="_blank" rel="noopener"><span class="emoji">▶️</span>YouTube Music</a>
-      <a class="pill" href="https://podcasts.apple.com/podcast/id1562576543" target="_blank" rel="noopener"><span class="emoji">🍎</span>Apple Podcasts</a>
-      <a class="pill" href="https://music.amazon.com/podcasts/946c6a86-d8b7-477e-99b6-6a9c7ac78339" target="_blank" rel="noopener"><span class="emoji">📦</span>Amazon Music</a>
-      <a class="pill" href="https://feeds.buzzsprout.com/1752627.rss" target="_blank" rel="noopener"><span class="emoji">📡</span>RSS Feed</a>
-    </div>
-  </section>
+    <aside id="sidebar">
+      <section id="latest-episode">
+        <h2 class="section-title">Latest Episode</h2>
+        <div id="episode-box" class="card player-card"><p class="muted">Loading…</p></div>
+      </section>
+
+      <section id="listen">
+        <h2 class="section-title">Listen On</h2>
+        <div class="pill-row">
+          <a class="pill" href="https://open.spotify.com/show/3LKLykojEvepBNo7Zlyr3P" target="_blank" rel="noopener"><span class="emoji">🎧</span>Spotify</a>
+          <a class="pill" href="https://www.youtube.com/channel/UCNLa1lq5IwqyrKC8jRm7GIQ" target="_blank" rel="noopener"><span class="emoji">▶️</span>YouTube Music</a>
+          <a class="pill" href="https://podcasts.apple.com/podcast/id1562576543" target="_blank" rel="noopener"><span class="emoji">🍎</span>Apple Podcasts</a>
+          <a class="pill" href="https://music.amazon.com/podcasts/946c6a86-d8b7-477e-99b6-6a9c7ac78339" target="_blank" rel="noopener"><span class="emoji">📦</span>Amazon Music</a>
+          <a class="pill" href="https://feeds.buzzsprout.com/1752627.rss" target="_blank" rel="noopener"><span class="emoji">📡</span>RSS Feed</a>
+        </div>
+      </section>
+    </aside>
+
+    <section id="twitter">
+      <h2 class="section-title">Latest from Twitter</h2>
+      <div class="card twitter-card">
+        <a class="twitter-timeline" data-height="500" data-dnt="true"
+           href="https://twitter.com/OtomeShimai?ref_src=twsrc%5Etfw">Posts from @OtomeShimai</a>
+        <p class="twitter-fallback muted">Feed not loading?
+          <a href="https://twitter.com/OtomeShimai" target="_blank" rel="noopener">Visit us on Twitter →</a></p>
+      </div>
+    </section>
+
+  </div>
 
 </main>
 
@@ -195,18 +219,10 @@
 
 <script>
 const FEED_URL = "https://feeds.buzzsprout.com/1752627.rss";
-const EPISODE_COUNT = 6;
 
 function text(node, sel) {
   const el = node.querySelector(sel);
   return el ? el.textContent.trim() : "";
-}
-
-function stripHtml(html) {
-  const div = document.createElement("div");
-  // space at tag boundaries so "<b>SPOILERS</b>In this…" doesn't run together
-  div.innerHTML = html.replace(/</g, " <");
-  return (div.textContent || "").replace(/\s+/g, " ").trim();
 }
 
 function fmtDate(str) {
@@ -221,79 +237,69 @@ function fmtDuration(str) {
   return h ? `${h}h ${m}m` : `${m} min`;
 }
 
-async function loadEpisodes() {
-  const box = document.getElementById("episode-list");
+async function loadLatestEpisode() {
+  const box = document.getElementById("episode-box");
   try {
     const res = await fetch(FEED_URL);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const xml = new DOMParser().parseFromString(await res.text(), "text/xml");
-    const items = [...xml.querySelectorAll("item")].slice(0, EPISODE_COUNT);
-    if (!items.length) throw new Error("no items");
-    box.innerHTML = "";
-    for (const item of items) {
-      const title = text(item, "title");
-      // the feed has no <link> element — build the episode page URL from the
-      // enclosure's slug (or the numeric guid as fallback)
-      const enclosure = item.querySelector("enclosure")?.getAttribute("url") || "";
-      const slug = (enclosure.match(/\/episodes\/([^/?#]+?)\.mp3/) || [])[1]
-        || (text(item, "guid").match(/\d+/) || [])[0];
-      const link = slug
-        ? "https://otomeshimai.buzzsprout.com/1752627/episodes/" + slug
-        : "https://otomeshimai.buzzsprout.com/";
-      const date = fmtDate(text(item, "pubDate"));
-      const duration = fmtDuration(item.getElementsByTagName("itunes:duration")[0]?.textContent || "");
-      const epNum = item.getElementsByTagName("itunes:episode")[0]?.textContent || "";
-      // Buzzsprout prepends a "Send us Fan Mail" link to every description — drop it
-      let desc = stripHtml(text(item, "description")).replace(/^Send us Fan Mail\s*/i, "");
-      if (desc.length > 220) desc = desc.slice(0, 220).replace(/\s+\S*$/, "") + "…";
+    const item = xml.querySelector("item");
+    if (!item) throw new Error("no items");
 
-      const div = document.createElement("div");
-      div.className = "episode";
-      const meta = [date, epNum && "Episode " + epNum, duration].filter(Boolean)
-        .map(m => `<span>${m}</span>`).join("");
-      div.innerHTML = `
-        <a class="play" href="${link}" target="_blank" rel="noopener" aria-label="Listen to ${title}">▶</a>
-        <div>
-          <h3><a href="${link}" target="_blank" rel="noopener"></a></h3>
-          <p class="desc"></p>
-          <p class="meta">${meta}</p>
-        </div>`;
-      div.querySelector("h3 a").textContent = title;
-      div.querySelector(".desc").textContent = desc;
-      box.appendChild(div);
-    }
+    const title = text(item, "title");
+    const date = fmtDate(text(item, "pubDate"));
+    const duration = fmtDuration(item.getElementsByTagName("itunes:duration")[0]?.textContent || "");
+    const audio = item.querySelector("enclosure")?.getAttribute("url") || "";
+    // the feed has no <link> element — build the episode page URL from the
+    // enclosure's slug (or the numeric guid as fallback)
+    const slug = (audio.match(/\/episodes\/([^/?#]+?)\.mp3/) || [])[1]
+      || (text(item, "guid").match(/\d+/) || [])[0];
+    const link = slug
+      ? "https://otomeshimai.buzzsprout.com/1752627/episodes/" + slug
+      : "https://otomeshimai.buzzsprout.com/";
+
+    box.innerHTML = `
+      <img class="ep-cover" src="assets/cover.jpg" alt="">
+      <h3><a href="${link}" target="_blank" rel="noopener"></a></h3>
+      <p class="meta"><span>${date}</span><span>${duration}</span></p>
+      <audio controls preload="none" src="${audio}"></audio>
+      <a class="btn" href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">All episodes on Buzzsprout →</a>`;
+    box.querySelector("h3 a").textContent = title;
   } catch (err) {
-    box.innerHTML = `<p class="muted">Couldn't load episodes right now — find them all on
+    box.innerHTML = `<p class="muted">Couldn't load the latest episode — find it on
       <a href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">Buzzsprout</a>!</p>`;
   }
 }
 
-async function loadWalkthroughs() {
-  const box = document.getElementById("walkthrough-list");
+async function loadFeaturedPost() {
+  const box = document.getElementById("featured-post");
   try {
-    const res = await fetch("walkthroughs/games.json");
-    const games = await res.json();
+    const posts = await (await fetch("blog/posts.json")).json();
+    posts.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    const p = posts[0];
+    if (!p) throw new Error("no posts");
+    const a = document.createElement("a");
+    a.className = "featured-post";
+    a.href = `blog/view.html?post=${encodeURIComponent(p.slug)}`;
+    a.innerHTML = `<span class="type"></span><h3></h3><p></p><span class="meta"></span><span class="tag">Read more →</span>`;
+    a.querySelector(".type").textContent = p.type || "post";
+    a.querySelector("h3").textContent = "✿ " + p.title;
+    a.querySelector("p").textContent = p.summary;
+    a.querySelector(".meta").textContent = p.date || "";
     box.innerHTML = "";
-    for (const g of games.slice(0, 3)) {
-      const a = document.createElement("a");
-      a.className = "walkthrough-card card";
-      a.href = `walkthroughs/view.html?game=${encodeURIComponent(g.slug)}`;
-      a.innerHTML = `<h3></h3><p></p><span class="tag">Read the walkthrough →</span>`;
-      a.querySelector("h3").textContent = "✿ " + g.title;
-      a.querySelector("p").textContent = g.summary;
-      box.appendChild(a);
-    }
+    box.appendChild(a);
   } catch (err) {
-    box.innerHTML = `<p class="muted">Walkthroughs coming soon!</p>`;
+    box.innerHTML = `<p class="muted">No posts yet — check the <a href="blog/">blog</a> soon!</p>`;
   }
 }
 
-loadEpisodes();
-loadWalkthroughs();
+loadLatestEpisode();
+loadFeaturedPost();
 
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.register("sw.js");
 }
 </script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>

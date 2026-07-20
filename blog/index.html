@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog — Otome Shimai</title>
+<meta name="description" content="Posts and game walkthroughs from the Otome Shimai podcast — routes, choices, endings, and more.">
+<link rel="icon" href="../assets/icons/favicon.png">
+<meta name="theme-color" content="#23b4ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.1rem;
+    margin-top: 1.4rem;
+  }
+  .post-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s;
+  }
+  .post-card:hover { transform: translateY(-3px); }
+  .post-card h2 { margin: 0 0 0.4rem; font-size: 1.25rem; }
+  .post-card p { margin: 0 0 0.6rem; font-size: 0.95rem; }
+  .post-card .meta { font-size: 0.82rem; color: var(--muted); }
+  .post-card .type {
+    display: inline-block;
+    padding: 0.05rem 0.7rem;
+    border-radius: 999px;
+    background: var(--sky-soft);
+    color: #1b8fd0;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
+  }
+  .post-card .tag {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #1b8fd0;
+    font-family: var(--font-display);
+  }
+</style>
+</head>
+<body>
+
+<nav class="mini-nav">
+  <div class="inner">
+    <a href="../"><img src="../assets/cover.jpg" alt="Otome Shimai"></a>
+    <a class="home" href="../">Otome Shimai</a>
+    <span class="crumb">/ Blog</span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <h1 class="section-title" style="font-size:2rem; margin-top:2rem;">Blog</h1>
+  <p>Posts from the sisters — game walkthroughs (full routes, choice-by-choice guides,
+    every ending), reviews, and whatever else we feel like writing about.</p>
+  <div id="grid" class="grid"><p class="muted">Loading…</p></div>
+</main>
+
+<footer class="site-footer">
+  <p style="margin:0;">✿ <a href="../">Back to Otome Shimai</a> ✿</p>
+</footer>
+
+<script>
+(async () => {
+  const grid = document.getElementById("grid");
+  try {
+    const posts = await (await fetch("posts.json")).json();
+    posts.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    grid.innerHTML = "";
+    if (!posts.length) {
+      grid.innerHTML = '<p class="muted">No posts yet — check back soon!</p>';
+      return;
+    }
+    for (const p of posts) {
+      const a = document.createElement("a");
+      a.className = "post-card card";
+      a.href = `view.html?post=${encodeURIComponent(p.slug)}`;
+      a.innerHTML = `<span class="type"></span><h2></h2><p></p><span class="meta"></span><span class="tag">Read more →</span>`;
+      a.querySelector(".type").textContent = p.type || "post";
+      a.querySelector("h2").textContent = "✿ " + p.title;
+      a.querySelector("p").textContent = p.summary;
+      a.querySelector(".meta").textContent = p.date || "";
+      grid.appendChild(a);
+    }
+  } catch (err) {
+    grid.innerHTML = '<p class="muted">Couldn\'t load the post list.</p>';
+  }
+})();
+</script>
+</body>
+</html>

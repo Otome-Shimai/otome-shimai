@@ -1,7 +1,7 @@
 # Virche Evermore: -ErroR:Salvation- — Walkthrough
 
 > **✏️ This is a placeholder walkthrough.** It exists to show the format — replace this
-> file's content with your real guide, and update the matching entry in `games.json`.
+> file's content with your real guide, and update the matching entry in `posts.json`.
 
 Our guide for **Virche Evermore: -ErroR:Salvation-**, the beautifully bleak tale of
 Ceres and the country of Arpechele.

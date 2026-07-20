@@ -57,15 +57,15 @@
   <div class="inner">
     <a href="../"><img src="../assets/cover.jpg" alt="Otome Shimai"></a>
     <a class="home" href="../">Otome Shimai</a>
-    <span class="crumb">/ <a href="./" style="color:rgba(255,255,255,.85)">Walkthroughs</a></span>
+    <span class="crumb">/ <a href="./" style="color:rgba(255,255,255,.85)">Blog</a></span>
   </div>
 </nav>
 
 <main class="wrap">
   <article id="content" class="card">
-    <p class="muted">Loading walkthrough…</p>
+    <p class="muted">Loading post…</p>
   </article>
-  <a class="backlink pill" href="./">← All walkthroughs</a>
+  <a class="backlink pill" href="./">← All posts</a>
 </main>
 
 <footer class="site-footer">
@@ -76,22 +76,23 @@
 <script>
 (async () => {
   const box = document.getElementById("content");
-  const slug = new URLSearchParams(location.search).get("game");
+  const params = new URLSearchParams(location.search);
+  const slug = params.get("post") || params.get("game"); // "game" kept for old links
   if (!slug || !/^[\w-]+$/.test(slug)) {
-    box.innerHTML = '<p class="muted">No walkthrough selected — pick one from the <a href="./">walkthrough list</a>.</p>';
+    box.innerHTML = '<p class="muted">No post selected — pick one from the <a href="./">blog</a>.</p>';
     return;
   }
   try {
-    const [mdRes, games] = await Promise.all([
+    const [mdRes, posts] = await Promise.all([
       fetch(slug + ".md"),
-      fetch("games.json").then(r => r.json()).catch(() => []),
+      fetch("posts.json").then(r => r.json()).catch(() => []),
     ]);
     if (!mdRes.ok) throw new Error("HTTP " + mdRes.status);
-    const meta = games.find(g => g.slug === slug);
-    if (meta) document.title = meta.title + " Walkthrough — Otome Shimai";
+    const meta = posts.find(p => p.slug === slug);
+    if (meta) document.title = meta.title + " — Otome Shimai";
     box.innerHTML = mdToHtml(await mdRes.text());
   } catch (err) {
-    box.innerHTML = '<p class="muted">Couldn\'t find that walkthrough — try the <a href="./">walkthrough list</a>.</p>';
+    box.innerHTML = '<p class="muted">Couldn\'t find that post — try the <a href="./">blog</a>.</p>';
   }
 })();
 </script>

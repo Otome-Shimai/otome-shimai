@@ -1,6 +1,6 @@
 /* Otome Shimai service worker — caches the app shell for offline use.
    Never caches cross-origin requests (RSS feed, fonts) — those stay live. */
-const CACHE = "otome-shimai-v2";
+const CACHE = "otome-shimai-v3";
 const SHELL = [
   "./",
   "index.html",
@@ -9,10 +9,10 @@ const SHELL = [
   "manifest.webmanifest",
   "assets/cover.jpg",
   "assets/header.png",
-  "walkthroughs/",
-  "walkthroughs/index.html",
-  "walkthroughs/view.html",
-  "walkthroughs/games.json",
+  "blog/",
+  "blog/index.html",
+  "blog/view.html",
+  "blog/posts.json",
 ];
 
 self.addEventListener("install", (e) => {

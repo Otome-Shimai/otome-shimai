@@ -1,7 +1,7 @@
 # Piofiore: Fated Memories — Walkthrough
 
 > **✏️ This is a placeholder walkthrough.** It exists to show the format — replace this
-> file's content with your real guide, and update the matching entry in `games.json`.
+> file's content with your real guide, and update the matching entry in `posts.json`.
 
 Welcome to our walkthrough for **Piofiore: Fated Memories**! Below is the structure we
 use for our guides: a spoiler-light intro, recommended route order, then a
