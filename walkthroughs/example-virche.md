@@ -8,7 +8,7 @@ Ceres and the country of Arpechele.
 
 ## Before You Start
 
-- Bring tissues. Seriously.
+- Bring tissues. Seriously. You'll need them.
 - The game is *very* linear about unlock order — follow the sequence below.
 - Skip-read is your friend on repeat chapters (`Ctrl` to fast-skip).
 
