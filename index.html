@@ -73,10 +73,15 @@
     align-items: start;
     column-gap: 2rem;
   }
-  .main-col { min-width: 0; }
-  #sidebar { position: sticky; top: 1rem; }
+  /* placed explicitly rather than left to source order: the episode is first in
+     the markup (so it leads in one column) but belongs on the right when there
+     are two */
+  .main-col { min-width: 0; grid-area: 1 / 1; }
+  #sidebar { grid-area: 1 / 2; position: sticky; top: 1rem; }
   @media (max-width: 860px) {
     .columns { grid-template-columns: minmax(0, 1fr); }
+    /* back to source order: episode, then post, then social */
+    .main-col, #sidebar { grid-area: auto; }
     #sidebar { position: static; }
   }
 
@@ -174,6 +179,15 @@
 
   <div class="columns">
 
+    <!-- the episode comes first in the source so it leads on a phone; on a wide
+         screen it is placed into the right-hand column instead -->
+    <aside id="sidebar">
+      <section id="latest-episode">
+        <h2 class="section-title">Latest Episode</h2>
+        <div id="episode-box" class="card"><p class="muted">Loading…</p></div>
+      </section>
+    </aside>
+
     <div class="main-col">
 
       <section id="latest-post">
@@ -193,13 +207,6 @@
       </section>
 
     </div>
-
-    <aside id="sidebar">
-      <section id="latest-episode">
-        <h2 class="section-title">Latest Episode</h2>
-        <div id="episode-box" class="card"><p class="muted">Loading…</p></div>
-      </section>
-    </aside>
 
   </div>
 
