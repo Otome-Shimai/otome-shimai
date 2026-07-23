@@ -2,8 +2,9 @@
 
 Static website for the [Otome Shimai](https://otomeshimai.buzzsprout.com/) podcast:
 about/intro, the latest blog post (walkthroughs included), a player for the latest
-episode (pulled live from the Buzzsprout RSS feed in the browser), a Twitter feed,
-streaming links, and socials. No server and no build step — plain HTML/CSS/JS,
+episode (pulled live from the Buzzsprout RSS feed in the browser), a social feed
+(X when it will render, otherwise Bluesky), streaming links, and socials. No server
+and no build step — plain HTML/CSS/JS,
 deployable to any static host. Live at https://pixelpixi.github.io/otome-shimai/
 (deploys automatically on push to `main`).
 
@@ -32,15 +33,15 @@ re-upload / git push to publish the change.)
 |---|---|
 | Page title / tab title | `index.html` — the `<title>` tag and `<meta name="description">` near the top |
 | Podcast name, subtitle, about text | `index.html` — the `<section class="intro">` block (plain HTML text) |
-| Streaming links (Spotify, YouTube Music, …) | `index.html` — the "Listen Everywhere" section; each link is one `<a class="pill">` line. Copy a line to add a platform, delete a line to remove one |
+| Streaming links (Spotify, YouTube Music, …) | `index.html` — the "Also listen on" pills inside the episode card, in the `loadLatestEpisode()` template. Each is one `<a class="pill">` line: copy a line to add a platform, delete a line to remove one |
 | Social links (Instagram, Twitter, Bluesky, Ko-fi) | `index.html` — the `<footer>` block, same one-line-per-link pattern |
 | Footer disclaimer text | `index.html` — the `<p class="disclaimer">` in the footer |
 | Blog posts & walkthroughs | `blog/*.md` + `blog/posts.json` (see below) |
-| Twitter feed account | `index.html` — the `twitter-timeline` link in the "Latest from Twitter" section |
+| Social feed accounts | `index.html` — the `BSKY_HANDLE` and `X_HANDLE` constants at the top of the script |
 | Cover art / banner image | Replace `assets/cover.jpg` (square) / `assets/header.png` (wide, flat `#23b4ff` background so it blends). Then run `python make-icons.py` to refresh the favicon/app icons |
 | Colors / fonts | `shared.css` — the `:root { --sky: … }` block at the top |
 | App name when installed as PWA | `manifest.webmanifest` |
-| Episode list | Nothing — it comes from the Buzzsprout RSS feed automatically |
+| The featured episode | Nothing — the newest episode in the Buzzsprout RSS feed is picked up automatically, along with its number, runtime and show notes. Everything older is reached through the "All episodes on Buzzsprout" link |
 
 ## Adding a blog post or walkthrough
 
@@ -57,8 +58,8 @@ placeholders once real posts exist.
 
 ## Structure
 
-- `index.html` — the whole main page (inline CSS/JS): latest post, latest-episode
-  player, Twitter feed, links
+- `index.html` — the whole main page (inline CSS/JS): latest post, Bluesky feed,
+  latest-episode player, links
 - `shared.css` — theme tokens + shared components (colors sampled from the artwork:
   sky `#23b4ff`, deep `#3d57ee`, page `#fafafa`)
 - `blog/` — `index.html` (post list), `view.html?post=<slug>` (renders the Markdown),
@@ -69,13 +70,37 @@ placeholders once real posts exist.
 - `manifest.webmanifest` + `sw.js` — PWA install + offline shell (the RSS feed is never
   cached)
 
+## Notes on the two live feeds
+
+- **Episodes** come from `rss.buzzsprout.com/1752627.rss`. The feed declares the iTunes
+  namespace as `...podcast-1.0.dtd`, so tags are read with `getElementsByTagName("itunes:…")`
+  — namespace-aware lookups against the usual `...podcast-1.0/` URI silently return nothing.
+  Items carry no `<link>` element, so the episode page URL is rebuilt from the MP3 slug.
+- **Bluesky** uses the public API (`public.api.bsky.app`), which needs no login or key.
+  Its author feed includes reposts of other accounts, so anything with a `reason` field
+  is filtered out — otherwise other people's posts show up as ours.
+
+- **The social feed shows X when it can, Bluesky otherwise.** A web page can't ask whether
+  a visitor is signed in to X — there's no API for that, and cross-origin rules forbid
+  reading it. So the page lets X *try*: it loads the official embed into a collapsed box
+  and watches the iframe. If X renders a real timeline the box is revealed, the heading
+  becomes "Latest from X", and the Bluesky list is dropped. If nothing has rendered within
+  `X_PROBE_MS` (4.5s), the embed is discarded and Bluesky stays.
+
+  Two things make the check necessary rather than paranoid: when X declines it still
+  injects an iframe (so "is there an iframe?" is not a usable test) but collapses it to
+  0px, and the promise `createTimeline()` returns **never settles at all** — it neither
+  resolves nor rejects. Measuring the iframe's height on a timer is the only signal that
+  actually works.
+
+  In practice X renders for signed-in visitors and refuses for signed-out ones, so this
+  tracks login *most* of the time — but it's a proxy, not a login check. Anyone whose
+  browser blocks third-party cookies (Safari and Firefox by default, any private window)
+  will see Bluesky even while signed in to X. Bluesky is rendered first and only replaced
+  on success, so the section is never empty and no one waits on the probe.
+
 ## TODO for the sisters ✿
 
-- **Bluesky link is a guess** (`bsky.app/profile/otomeshimai.bsky.social`) — verify or
-  fix it in `index.html`.
 - **"YouTube Music" currently points at the YouTube channel** — swap in a
-  `music.youtube.com` link if you have one (`index.html`, Listen Everywhere section).
+  `music.youtube.com` link if you have one (`index.html`, the "Also listen on" pills).
 - Replace the two placeholder walkthrough posts with real guides.
-- The Twitter feed uses X's official embed script; X sometimes refuses to render
-  timelines for logged-out visitors — the card then shows a "Visit us on Twitter"
-  link instead. Nothing to fix on our side.

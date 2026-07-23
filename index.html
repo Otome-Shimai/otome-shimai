@@ -64,24 +64,20 @@
     .intro h1 { font-size: 2rem; }
   }
 
-  /* two-column layout: posts + twitter on the left, episode player sidebar on the right */
+  /* two columns: posts + social stacked on the left, episode player on the right.
+     The left column is one grid item so it packs to the top — if the sidebar spanned
+     two rows instead, its extra height would be pushed into the left column as a gap. */
   .columns {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
-    grid-template-areas:
-      "post side"
-      "twitter side";
-    align-content: start;
+    align-items: start;
     column-gap: 2rem;
   }
-  #latest-post { grid-area: post; }
-  #sidebar { grid-area: side; }
-  #twitter { grid-area: twitter; }
+  .main-col { min-width: 0; }
+  #sidebar { position: sticky; top: 1rem; }
   @media (max-width: 860px) {
-    .columns {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "post" "side" "twitter";
-    }
+    .columns { grid-template-columns: minmax(0, 1fr); }
+    #sidebar { position: static; }
   }
 
   /* featured latest post */
@@ -92,7 +88,7 @@
     padding: 0.05rem 0.7rem;
     border-radius: 999px;
     background: var(--sky-soft);
-    color: #1b8fd0;
+    color: var(--sky-text);
     font-family: var(--font-display);
     font-size: 0.82rem;
     margin-bottom: 0.6rem;
@@ -101,34 +97,45 @@
   .featured-post h3 { margin: 0 0 0.4rem; font-size: 1.45rem; }
   .featured-post p { margin: 0 0 0.6rem; }
   .featured-post .meta { font-size: 0.85rem; color: var(--muted); }
-  .featured-post .tag { display: block; margin-top: 0.6rem; font-family: var(--font-display); color: #1b8fd0; }
+  .featured-post .tag { display: block; margin-top: 0.6rem; font-family: var(--font-display); color: var(--sky-text); }
   .more { text-align: center; margin-top: 1.3rem; }
 
-  /* latest-episode player card */
-  .player-card { text-align: center; }
-  .player-card img.ep-cover {
-    width: 130px;
-    height: 130px;
-    border-radius: 14px;
+  /* latest-episode card: art + title, transport, notes, links, listen-on */
+  .ep-head { display: flex; gap: 0.9rem; align-items: center; margin-bottom: 1rem; }
+  .ep-head img {
+    width: 76px;
+    height: 76px;
+    flex: none;
+    border-radius: 12px;
     box-shadow: var(--shadow);
-    margin-bottom: 0.7rem;
   }
-  .player-card h3 { margin: 0 0 0.35rem; font-size: 1.1rem; }
-  .player-card h3 a { color: inherit; text-decoration: none; }
-  .player-card h3 a:hover { color: var(--deep); }
-  .player-card .meta { font-size: 0.85rem; color: var(--muted); margin: 0 0 0.8rem; }
-  .player-card .meta span + span::before { content: " • "; margin: 0 0.3em; color: var(--sky); }
-  .player-card audio { width: 100%; margin-bottom: 0.9rem; }
-  .player-card .btn { display: block; margin-top: 0.5rem; }
+  .ep-num { font-family: var(--font-display); color: var(--sky-text); font-size: 0.85rem; }
+  .ep-head h3 { margin: 0.1rem 0 0.15rem; font-size: 1.05rem; }
+  .ep-head h3 a { color: inherit; text-decoration: none; }
+  .ep-head h3 a:hover { color: var(--deep); }
+  .ep-meta { font-size: 0.85rem; color: var(--muted); }
+  .ep-notes {
+    font-size: 0.88rem;
+    color: var(--muted);
+    border-top: 1px solid #ececee;
+    padding-top: 0.8rem;
+    margin: 0.9rem 0 1rem;
+  }
+  #episode-box audio { display: none; }
+  #episode-box .btn { display: block; text-align: center; margin-bottom: 0.5rem; }
+  #episode-box .archive { display: flex; justify-content: center; }
+  .also { border-top: 1px solid #ececee; margin-top: 1rem; padding-top: 0.9rem; }
+  .also .lbl { font-size: 0.8rem; color: var(--muted); text-align: center; margin-bottom: 0.5rem; }
+  .also .pill-row { justify-content: center; gap: 0.4rem; }
+  .also .pill { padding: 0.25rem 0.75rem; font-size: 0.85rem; }
 
-  /* listen-everywhere pills stack in the sidebar */
-  #sidebar .pill-row { flex-direction: column; align-items: stretch; }
-  #sidebar .pill { justify-content: center; }
-
-  /* twitter feed */
-  .twitter-card { padding: 0.9rem; }
-  .twitter-card .twitter-timeline { border-radius: 12px; }
-  .twitter-fallback { font-size: 0.9rem; text-align: center; margin: 0.8rem 0 0.3rem; }
+  /* social feed */
+  .feed-card { padding: 1rem 1.1rem; }
+  .feed-foot { text-align: center; margin: 0.9rem 0 0.2rem; }
+  /* clamped, not display:none — a hidden box has no layout, and we need to
+     measure the height of the iframe X puts inside it */
+  #x-embed { height: 0; overflow: hidden; }
+  #x-embed.ready { height: auto; overflow: visible; }
 
   /* socials in footer */
   .social-row {
@@ -143,7 +150,7 @@
     background: transparent;
     color: #fff;
   }
-  .social-row .pill:hover { background: #fff; color: #1b8fd0; }
+  .social-row .pill:hover { background: #fff; color: var(--sky-text); }
 </style>
 </head>
 <body>
@@ -167,39 +174,32 @@
 
   <div class="columns">
 
-    <section id="latest-post">
-      <h2 class="section-title">Latest Post</h2>
-      <div id="featured-post" class="card"><p class="muted">Loading…</p></div>
-      <p class="more"><a class="btn" href="blog/">Browse all posts →</a></p>
-    </section>
+    <div class="main-col">
+
+      <section id="latest-post">
+        <h2 class="section-title">Latest Post</h2>
+        <div id="featured-post" class="card"><p class="muted">Loading…</p></div>
+        <p class="more"><a class="btn" href="blog/">Browse all posts →</a></p>
+      </section>
+
+      <section id="social">
+        <h2 class="section-title" id="social-title">Latest from Bluesky</h2>
+        <div class="card feed-card">
+          <!-- X gets to try rendering here; the box stays collapsed until we can
+               see that it actually worked, so nobody waits on a feed that won't come -->
+          <div id="x-embed"></div>
+          <div id="feed-box"><p class="muted">Loading…</p></div>
+        </div>
+      </section>
+
+    </div>
 
     <aside id="sidebar">
       <section id="latest-episode">
         <h2 class="section-title">Latest Episode</h2>
-        <div id="episode-box" class="card player-card"><p class="muted">Loading…</p></div>
-      </section>
-
-      <section id="listen">
-        <h2 class="section-title">Listen On</h2>
-        <div class="pill-row">
-          <a class="pill" href="https://open.spotify.com/show/3LKLykojEvepBNo7Zlyr3P" target="_blank" rel="noopener"><span class="emoji">🎧</span>Spotify</a>
-          <a class="pill" href="https://www.youtube.com/channel/UCNLa1lq5IwqyrKC8jRm7GIQ" target="_blank" rel="noopener"><span class="emoji">▶️</span>YouTube Music</a>
-          <a class="pill" href="https://podcasts.apple.com/podcast/id1562576543" target="_blank" rel="noopener"><span class="emoji">🍎</span>Apple Podcasts</a>
-          <a class="pill" href="https://music.amazon.com/podcasts/946c6a86-d8b7-477e-99b6-6a9c7ac78339" target="_blank" rel="noopener"><span class="emoji">📦</span>Amazon Music</a>
-          <a class="pill" href="https://feeds.buzzsprout.com/1752627.rss" target="_blank" rel="noopener"><span class="emoji">📡</span>RSS Feed</a>
-        </div>
+        <div id="episode-box" class="card"><p class="muted">Loading…</p></div>
       </section>
     </aside>
-
-    <section id="twitter">
-      <h2 class="section-title">Latest from Twitter</h2>
-      <div class="card twitter-card">
-        <a class="twitter-timeline" data-height="500" data-dnt="true"
-           href="https://twitter.com/OtomeShimai?ref_src=twsrc%5Etfw">Posts from @OtomeShimai</a>
-        <p class="twitter-fallback muted">Feed not loading?
-          <a href="https://twitter.com/OtomeShimai" target="_blank" rel="noopener">Visit us on Twitter →</a></p>
-      </div>
-    </section>
 
   </div>
 
@@ -209,8 +209,8 @@
   <h2 style="color:#fff; margin:0;">Come say hi! ✿</h2>
   <div class="social-row">
     <a class="pill" href="https://www.instagram.com/otomeshimai/" target="_blank" rel="noopener"><span class="emoji">📸</span>Instagram</a>
-    <a class="pill" href="https://twitter.com/OtomeShimai" target="_blank" rel="noopener"><span class="emoji">🐦</span>Twitter</a>
     <a class="pill" href="https://bsky.app/profile/otomeshimai.bsky.social" target="_blank" rel="noopener"><span class="emoji">🦋</span>Bluesky</a>
+    <a class="pill" href="https://twitter.com/OtomeShimai" target="_blank" rel="noopener"><span class="emoji">🐦</span>Twitter</a>
     <a class="pill" href="https://ko-fi.com/OtomeShimai" target="_blank" rel="noopener"><span class="emoji">☕</span>Ko-fi</a>
   </div>
   <p class="disclaimer">Disclaimer: None of the games or characters we are discussing belong to us.
@@ -218,11 +218,40 @@
 </footer>
 
 <script>
-const FEED_URL = "https://feeds.buzzsprout.com/1752627.rss";
+// feeds.buzzsprout.com 301s here; going direct saves the redirect hop
+const FEED_URL = "https://rss.buzzsprout.com/1752627.rss";
+const SHOW_URL = "https://otomeshimai.buzzsprout.com/";
+const BSKY_HANDLE = "otomeshimai.bsky.social";
+const X_HANDLE = "OtomeShimai";
+const X_PROBE_MS = 4500; // how long to let X prove it can render before giving up
+
+const PLAY_PATH = "M8 5v14l11-7z";
+const PAUSE_PATH = "M7 5h3.5v14H7zm6.5 0H17v14h-3.5z";
 
 function text(node, sel) {
   const el = node.querySelector(sel);
   return el ? el.textContent.trim() : "";
+}
+
+// namespaced tags need getElementsByTagName — this feed declares the itunes
+// namespace as ...podcast-1.0.dtd, so namespace-aware lookups against the more
+// common ...podcast-1.0/ URI come back empty
+function itunes(item, name) {
+  return item.getElementsByTagName("itunes:" + name)[0]?.textContent.trim() || "";
+}
+
+// space out the tags first, otherwise "</p><p>" glues the two words together
+function stripHtml(html) {
+  const div = document.createElement("div");
+  div.innerHTML = String(html).replace(/</g, " <");
+  return div.textContent.replace(/\s+/g, " ").trim();
+}
+
+function truncate(str, max) {
+  if (str.length <= max) return str;
+  const cut = str.slice(0, max);
+  const space = cut.lastIndexOf(" ");
+  return (space > max / 3 ? cut.slice(0, space) : cut).replace(/[\s.,;:—–-]+$/, "") + "…";
 }
 
 function fmtDate(str) {
@@ -237,6 +266,96 @@ function fmtDuration(str) {
   return h ? `${h}h ${m}m` : `${m} min`;
 }
 
+function fmtTime(secs) {
+  if (!isFinite(secs) || secs < 0) return "--:--";
+  const s = Math.floor(secs % 60), m = Math.floor(secs / 60) % 60, h = Math.floor(secs / 3600);
+  const mm = h ? String(m).padStart(2, "0") : String(m);
+  return (h ? h + ":" : "") + mm + ":" + String(s).padStart(2, "0");
+}
+
+function relTime(iso) {
+  const then = new Date(iso);
+  if (isNaN(then)) return "";
+  const secs = Math.max(0, (Date.now() - then) / 1000);
+  if (secs < 3600) return Math.max(1, Math.floor(secs / 60)) + "m";
+  if (secs < 86400) return Math.floor(secs / 3600) + "h";
+  if (secs < 604800) return Math.floor(secs / 86400) + "d";
+  return then.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+// wire the custom transport up to the (hidden) audio element
+function setupPlayer(box, totalSeconds) {
+  const audio = box.querySelector("audio");
+  const btn = box.querySelector(".play");
+  const icon = btn.querySelector("path");
+  const track = box.querySelector(".scrub");
+  const fill = track.querySelector("div");
+  const elapsed = box.querySelector(".t-elapsed");
+  const total = box.querySelector(".t-total");
+  let pendingSeek = null;
+
+  const duration = () => (isFinite(audio.duration) && audio.duration > 0 ? audio.duration : totalSeconds);
+
+  function paint() {
+    const d = duration();
+    const pct = d ? Math.min(100, (audio.currentTime / d) * 100) : 0;
+    fill.style.width = pct + "%";
+    elapsed.textContent = fmtTime(audio.currentTime);
+    track.setAttribute("aria-valuenow", Math.round(pct));
+    track.setAttribute("aria-valuetext", fmtTime(audio.currentTime) + " of " + fmtTime(d));
+  }
+
+  function seekTo(fraction) {
+    const clamped = Math.min(1, Math.max(0, fraction));
+    // with preload="none" the metadata isn't there yet, so remember the target
+    if (isFinite(audio.duration) && audio.duration > 0) {
+      audio.currentTime = clamped * audio.duration;
+    } else {
+      pendingSeek = clamped;
+      audio.load();
+    }
+  }
+
+  btn.addEventListener("click", () => {
+    if (audio.paused) audio.play().catch(() => {}); else audio.pause();
+  });
+  audio.addEventListener("play", () => {
+    btn.dataset.state = "playing";
+    btn.setAttribute("aria-label", "Pause episode");
+    icon.setAttribute("d", PAUSE_PATH);
+  });
+  audio.addEventListener("pause", () => {
+    btn.dataset.state = "paused";
+    btn.setAttribute("aria-label", "Play episode");
+    icon.setAttribute("d", PLAY_PATH);
+  });
+  audio.addEventListener("timeupdate", paint);
+  audio.addEventListener("loadedmetadata", () => {
+    total.textContent = fmtTime(audio.duration);
+    if (pendingSeek !== null) {
+      audio.currentTime = pendingSeek * audio.duration;
+      pendingSeek = null;
+    }
+    paint();
+  });
+
+  track.addEventListener("click", (ev) => {
+    const rect = track.getBoundingClientRect();
+    seekTo((ev.clientX - rect.left) / rect.width);
+  });
+  track.addEventListener("keydown", (ev) => {
+    const d = duration();
+    if (!d) return;
+    if (ev.key === "ArrowRight") seekTo((audio.currentTime + 15) / d);
+    else if (ev.key === "ArrowLeft") seekTo((audio.currentTime - 15) / d);
+    else return;
+    ev.preventDefault();
+  });
+
+  total.textContent = fmtTime(totalSeconds);
+  paint();
+}
+
 async function loadLatestEpisode() {
   const box = document.getElementById("episode-box");
   try {
@@ -246,28 +365,78 @@ async function loadLatestEpisode() {
     const item = xml.querySelector("item");
     if (!item) throw new Error("no items");
 
-    const title = text(item, "title");
+    // titles already read "Episode 47: ..." so drop the prefix — the number
+    // is shown separately above the title
+    const number = itunes(item, "episode");
+    const title = text(item, "title").replace(/^\s*Episode\s+\d+\s*[:\-–—]\s*/i, "");
     const date = fmtDate(text(item, "pubDate"));
-    const duration = fmtDuration(item.getElementsByTagName("itunes:duration")[0]?.textContent || "");
+    const seconds = parseInt(itunes(item, "duration"), 10) || 0;
+    const duration = fmtDuration(itunes(item, "duration"));
     const audio = item.querySelector("enclosure")?.getAttribute("url") || "";
+    // buzzsprout injects a "Send us Fan Mail" link at the head of every description
+    const notes = truncate(
+      stripHtml(text(item, "description")).replace(/^\s*Send us (?:Fan Mail|a text)\s*/i, ""),
+      180
+    );
     // the feed has no <link> element — build the episode page URL from the
     // enclosure's slug (or the numeric guid as fallback)
     const slug = (audio.match(/\/episodes\/([^/?#]+?)\.mp3/) || [])[1]
       || (text(item, "guid").match(/\d+/) || [])[0];
     const link = slug
       ? "https://otomeshimai.buzzsprout.com/1752627/episodes/" + slug
-      : "https://otomeshimai.buzzsprout.com/";
+      : SHOW_URL;
 
     box.innerHTML = `
-      <img class="ep-cover" src="assets/cover.jpg" alt="">
-      <h3><a href="${link}" target="_blank" rel="noopener"></a></h3>
-      <p class="meta"><span>${date}</span><span>${duration}</span></p>
-      <audio controls preload="none" src="${audio}"></audio>
-      <a class="btn" href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">All episodes on Buzzsprout →</a>`;
+      <div class="ep-head">
+        <img src="assets/cover.jpg" alt="">
+        <div>
+          <div class="ep-num"></div>
+          <h3><a href="${link}" target="_blank" rel="noopener"></a></h3>
+          <div class="ep-meta"><span class="ep-date"></span> · <span class="ep-dur"></span></div>
+        </div>
+      </div>
+
+      <div class="transport">
+        <button class="play" type="button" data-state="paused" aria-label="Play episode">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PLAY_PATH}"/></svg>
+        </button>
+        <div style="flex:1">
+          <div class="scrub" role="slider" tabindex="0" aria-label="Seek within episode"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div></div></div>
+          <div class="times"><span class="t-elapsed">0:00</span><span class="t-total">--:--</span></div>
+        </div>
+      </div>
+
+      <audio preload="none" src="${audio}"></audio>
+      <p class="ep-notes"></p>
+
+      <a class="btn" href="${link}" target="_blank" rel="noopener">Episode page →</a>
+      <a class="pill archive" href="${SHOW_URL}" target="_blank" rel="noopener">All episodes on Buzzsprout</a>
+
+      <div class="also">
+        <div class="lbl">Also listen on</div>
+        <div class="pill-row">
+          <a class="pill" href="https://open.spotify.com/show/3LKLykojEvepBNo7Zlyr3P" target="_blank" rel="noopener">Spotify</a>
+          <a class="pill" href="https://podcasts.apple.com/podcast/id1562576543" target="_blank" rel="noopener">Apple</a>
+          <a class="pill" href="https://www.youtube.com/channel/UCNLa1lq5IwqyrKC8jRm7GIQ" target="_blank" rel="noopener">YouTube</a>
+          <a class="pill" href="https://music.amazon.com/podcasts/946c6a86-d8b7-477e-99b6-6a9c7ac78339" target="_blank" rel="noopener">Amazon</a>
+          <a class="pill" href="${FEED_URL}" target="_blank" rel="noopener">RSS</a>
+        </div>
+      </div>`;
+
+    // feed-supplied strings go in as text, never markup
+    const numBox = box.querySelector(".ep-num");
+    if (number) numBox.textContent = "Episode " + number; else numBox.remove();
     box.querySelector("h3 a").textContent = title;
+    box.querySelector(".ep-date").textContent = date;
+    box.querySelector(".ep-dur").textContent = duration;
+    if (notes) box.querySelector(".ep-notes").textContent = notes;
+    else box.querySelector(".ep-notes").remove();
+
+    setupPlayer(box, seconds);
   } catch (err) {
     box.innerHTML = `<p class="muted">Couldn't load the latest episode — find it on
-      <a href="https://otomeshimai.buzzsprout.com/" target="_blank" rel="noopener">Buzzsprout</a>!</p>`;
+      <a href="${SHOW_URL}" target="_blank" rel="noopener">Buzzsprout</a>!</p>`;
   }
 }
 
@@ -293,13 +462,110 @@ async function loadFeaturedPost() {
   }
 }
 
+async function loadBlueskyFeed() {
+  const box = document.getElementById("feed-box");
+  const profile = "https://bsky.app/profile/" + BSKY_HANDLE;
+  const follow = `<p class="feed-foot"><a class="pill" href="${profile}" target="_blank" rel="noopener">Follow us on Bluesky →</a></p>`;
+  try {
+    const url = "https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed"
+      + `?actor=${encodeURIComponent(BSKY_HANDLE)}&limit=20&filter=posts_no_replies`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+
+    // the author feed mixes in reposts of other accounts — reason is set on those
+    const posts = (data.feed || [])
+      .filter((entry) => !entry.reason && entry.post?.author?.handle === BSKY_HANDLE)
+      .slice(0, 5);
+    if (!posts.length) throw new Error("no posts");
+
+    box.innerHTML = "";
+    for (const entry of posts) {
+      const post = entry.post;
+      const rkey = post.uri.split("/").pop();
+      const row = document.createElement("div");
+      row.className = "feed-post";
+      row.innerHTML = `
+        <img class="avatar" src="${post.author.avatar || "assets/cover.jpg"}" alt="" loading="lazy">
+        <div>
+          <div class="head"><b></b> <span class="who"></span></div>
+          <a class="body" href="https://bsky.app/profile/${encodeURIComponent(post.author.handle)}/post/${encodeURIComponent(rkey)}" target="_blank" rel="noopener"></a>
+        </div>`;
+      row.querySelector("b").textContent = post.author.displayName || post.author.handle;
+      row.querySelector(".who").textContent = "@" + post.author.handle + " · " + relTime(post.record?.createdAt);
+      row.querySelector(".body").textContent = post.record?.text || "";
+      box.appendChild(row);
+    }
+    box.insertAdjacentHTML("beforeend", follow);
+  } catch (err) {
+    box.innerHTML = `<p class="muted">Couldn't load our posts right now — come find us on Bluesky!</p>` + follow;
+  }
+}
+
+// A page cannot ask whether a visitor is signed in to X — that's cross-origin and
+// there is no API for it. What it can do is let X try to render its timeline and
+// watch what happens. When X declines (logged-out visitors, or blocked third-party
+// cookies) it still injects an iframe but collapses it to 0px, and the promise
+// createTimeline() returns never settles either way — so neither can be relied on.
+// Polling the iframe's height, with a deadline, is the only signal that works.
+function probeXTimeline(host) {
+  return new Promise((resolve) => {
+    let settled = false, poll, deadline;
+    const finish = (rendered) => {
+      if (settled) return;
+      settled = true;
+      clearInterval(poll);
+      clearTimeout(deadline);
+      resolve(rendered);
+    };
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://platform.twitter.com/widgets.js";
+    script.onerror = () => finish(false); // blocked by an extension, most likely
+    script.onload = () => {
+      if (!window.twttr || !window.twttr.ready) return finish(false);
+      window.twttr.ready(() => {
+        window.twttr.widgets.createTimeline(
+          { sourceType: "profile", screenName: X_HANDLE },
+          host,
+          { height: 500, dnt: true }
+        );
+      });
+    };
+    document.head.appendChild(script);
+
+    poll = setInterval(() => {
+      const frame = host.querySelector("iframe");
+      if (frame && frame.getBoundingClientRect().height > 100) finish(true);
+    }, 250);
+    deadline = setTimeout(() => finish(false), X_PROBE_MS);
+  });
+}
+
+// Bluesky is rendered first and stays unless X proves it can do better, so the
+// section always has something in it and nobody stares at a spinner.
+async function preferXFeed() {
+  const host = document.getElementById("x-embed");
+  if (!(await probeXTimeline(host))) {
+    host.remove();
+    return;
+  }
+  host.classList.add("ready");
+  host.insertAdjacentHTML("beforeend",
+    `<p class="feed-foot"><a class="pill" href="https://twitter.com/${X_HANDLE}" target="_blank" rel="noopener">Follow us on X →</a></p>`);
+  document.getElementById("feed-box").remove();
+  document.getElementById("social-title").textContent = "Latest from X";
+}
+
 loadLatestEpisode();
 loadFeaturedPost();
+loadBlueskyFeed();
+preferXFeed();
 
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.register("sw.js");
 }
 </script>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
