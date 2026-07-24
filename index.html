@@ -576,7 +576,7 @@ function probeXTimeline(host, embedHost, embedId) {
 // section always has something in it and nobody stares at a spinner.
 async function preferXFeed() {
   const host = document.getElementById("x-embed");
-  if (X_DEBUG) { host.style.height = "auto"; host.style.outline = "2px dashed #1b8fd0"; }
+  if (X_DEBUG) host.style.height = "auto";
   for (const [i, embedHost] of X_EMBED_HOSTS.entries()) {
     const frame = await probeXTimeline(host, embedHost, "x-probe-" + i);
     if (!frame) continue;
