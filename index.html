@@ -230,7 +230,13 @@ const FEED_URL = "https://rss.buzzsprout.com/1752627.rss";
 const SHOW_URL = "https://otomeshimai.buzzsprout.com/";
 const BSKY_HANDLE = "otomeshimai.bsky.social";
 const X_HANDLE = "OtomeShimai";
-const X_PROBE_MS = 4500; // how long to let X prove it can render before giving up
+// How long to let X prove it can render before giving up. The clock starts
+// before widgets.js has even begun downloading, and a successful render is six
+// serial network legs deep (widgets.js → support frame → settings call →
+// timeline chunk → timeline document → its app and data) — the iframe reports
+// no height until the end of that chain. The wait is invisible either way:
+// Bluesky is already on screen and the X box only appears on success.
+const X_PROBE_MS = 15000;
 
 const PLAY_PATH = "M8 5v14l11-7z";
 const PAUSE_PATH = "M7 5h3.5v14H7zm6.5 0H17v14h-3.5z";

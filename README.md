@@ -85,7 +85,10 @@ placeholders once real posts exist.
   reading it. So the page lets X *try*: it loads the official embed into a collapsed box
   and watches the iframe. If X renders a real timeline the box is revealed, the heading
   becomes "Latest from X", and the Bluesky list is dropped. If nothing has rendered within
-  `X_PROBE_MS` (4.5s), the embed is discarded and Bluesky stays.
+  `X_PROBE_MS` (15s), the embed is discarded and Bluesky stays. The budget is generous on
+  purpose: it runs from before `widgets.js` starts downloading, and a successful render is
+  several serial requests deep, so a short deadline quietly discards timelines that were
+  seconds from appearing — while a long one costs nothing, since Bluesky is already showing.
 
   Two things make the check necessary rather than paranoid: when X declines it still
   injects an iframe (so "is there an iframe?" is not a usable test) but collapses it to
