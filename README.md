@@ -102,6 +102,13 @@ placeholders once real posts exist.
   will see Bluesky even while signed in to X. Bluesky is rendered first and only replaced
   on success, so the section is never empty and no one waits on the probe.
 
+  The embed must NOT set the `dnt` option. The timeline document is rendered server-side
+  from the cookies that reach `syndication.twitter.com`, and filling it with posts only
+  for signed-in visitors is exactly the cookie personalization `dnt` forbids — with `dnt`
+  on, even signed-in visitors get the empty signed-out document and the probe always
+  falls back to Bluesky. Debugging aid: open the page with `?xdebug` to keep the X box
+  visible, stretch the deadline, and log the iframe's height to the console on each poll.
+
 ## TODO for the sisters ✿
 
 - **"YouTube Music" currently points at the YouTube channel** — swap in a

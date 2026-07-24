@@ -237,6 +237,10 @@ const X_HANDLE = "OtomeShimai";
 // no height until the end of that chain. The wait is invisible either way:
 // Bluesky is already on screen and the X box only appears on success.
 const X_PROBE_MS = 15000;
+// Open the page with ?xdebug to watch the probe work: the X box is left
+// visible, the deadline is stretched, and each poll tick logs the iframe
+// height to the console.
+const X_DEBUG = new URLSearchParams(location.search).has("xdebug");
 
 const PLAY_PATH = "M8 5v14l11-7z";
 const PAUSE_PATH = "M7 5h3.5v14H7zm6.5 0H17v14h-3.5z";
@@ -539,10 +543,16 @@ function probeXTimeline(host) {
     script.onload = () => {
       if (!window.twttr || !window.twttr.ready) return finish(false);
       window.twttr.ready(() => {
+        // No dnt flag: the timeline document is rendered server-side from the
+        // cookies that reach syndication.twitter.com, and X only fills it with
+        // posts for signed-in visitors — that IS cookie personalization, which
+        // dnt tells X not to do. With dnt on, even signed-in visitors get the
+        // empty signed-out document, so the whole X-when-logged-in idea
+        // depends on leaving it off.
         window.twttr.widgets.createTimeline(
           { sourceType: "profile", screenName: X_HANDLE },
           host,
-          { height: 500, dnt: true }
+          { height: 500 }
         );
       });
     };
@@ -550,9 +560,10 @@ function probeXTimeline(host) {
 
     poll = setInterval(() => {
       const frame = host.querySelector("iframe");
+      if (X_DEBUG) console.log("[x-probe]", frame ? "iframe height " + frame.getBoundingClientRect().height : "no iframe yet");
       if (frame && frame.getBoundingClientRect().height > 100) finish(true);
     }, 250);
-    deadline = setTimeout(() => finish(false), X_PROBE_MS);
+    deadline = setTimeout(() => finish(false), X_DEBUG ? 60000 : X_PROBE_MS);
   });
 }
 
@@ -560,7 +571,9 @@ function probeXTimeline(host) {
 // section always has something in it and nobody stares at a spinner.
 async function preferXFeed() {
   const host = document.getElementById("x-embed");
+  if (X_DEBUG) { host.style.height = "auto"; host.style.outline = "2px dashed #1b8fd0"; }
   if (!(await probeXTimeline(host))) {
+    if (X_DEBUG) { console.log("[x-probe] gave up — keeping Bluesky"); return; }
     host.remove();
     return;
   }
