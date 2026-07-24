@@ -82,32 +82,34 @@ placeholders once real posts exist.
 
 - **The social feed shows X when it can, Bluesky otherwise.** A web page can't ask whether
   a visitor is signed in to X — there's no API for that, and cross-origin rules forbid
-  reading it. So the page lets X *try*: it loads the official embed into a collapsed box
-  and watches the iframe. If X renders a real timeline the box is revealed, the heading
-  becomes "Latest from X", and the Bluesky list is dropped. If nothing has rendered within
-  `X_PROBE_MS` (15s), the embed is discarded and Bluesky stays. The budget is generous on
-  purpose: it runs from before `widgets.js` starts downloading, and a successful render is
-  several serial requests deep, so a short deadline quietly discards timelines that were
-  seconds from appearing — while a long one costs nothing, since Bluesky is already showing.
+  reading it. So the page lets X's own server answer: it loads X's timeline document
+  (`/srv/timeline-profile/screen-name/…` — the same document `widgets.js` puts in its
+  iframe) into a collapsed box. That document is rendered server-side from whatever X
+  cookies arrive with the request: signed-in visitors get their posts, everyone else gets
+  the empty "Nothing to see here" card. The document reports back over `postMessage`
+  (JSON-RPC: `initialized → results → rendered → resize`), and the height in the `resize`
+  message classifies the outcome — the refusal card measures ~400px at the probe width,
+  while a timeline with real posts fills its `maxHeight` cap. On success the box is
+  revealed, the heading becomes "Latest from X", and the Bluesky list is dropped;
+  otherwise Bluesky stays.
 
-  Two things make the check necessary rather than paranoid: when X declines it still
-  injects an iframe (so "is there an iframe?" is not a usable test) but collapses it to
-  0px, and the promise `createTimeline()` returns **never settles at all** — it neither
-  resolves nor rejects. Measuring the iframe's height on a timer is the only signal that
-  actually works.
+  `widgets.js` itself is deliberately NOT used. It is hardwired to
+  `syndication.twitter.com`, but X moved logins to x.com in 2024, so most signed-in
+  visitors only carry `.x.com` cookies — which never reach a twitter.com host, making the
+  official embed render as signed-out even for signed-in people. The page instead requests
+  the document from `syndication.x.com` first (where today's login cookies live) and falls
+  back to `syndication.twitter.com` for anyone still holding an old twitter.com session
+  (`X_EMBED_HOSTS`, one `X_ATTEMPT_MS` budget each).
 
-  In practice X renders for signed-in visitors and refuses for signed-out ones, so this
-  tracks login *most* of the time — but it's a proxy, not a login check. Anyone whose
-  browser blocks third-party cookies (Safari and Firefox by default, any private window)
-  will see Bluesky even while signed in to X. Bluesky is rendered first and only replaced
+  This is still a proxy, not a login check. Anyone whose browser blocks third-party
+  cookies (Safari and Firefox by default, any private window) will see Bluesky even while
+  signed in to X. The embed must also never send `dnt` — serving posts only to signed-in
+  visitors is exactly the cookie personalization `dnt` forbids, so with `dnt` on even
+  signed-in visitors get the empty document. Bluesky is rendered first and only replaced
   on success, so the section is never empty and no one waits on the probe.
 
-  The embed must NOT set the `dnt` option. The timeline document is rendered server-side
-  from the cookies that reach `syndication.twitter.com`, and filling it with posts only
-  for signed-in visitors is exactly the cookie personalization `dnt` forbids — with `dnt`
-  on, even signed-in visitors get the empty signed-out document and the probe always
-  falls back to Bluesky. Debugging aid: open the page with `?xdebug` to keep the X box
-  visible, stretch the deadline, and log the iframe's height to the console on each poll.
+  Debugging aid: open the page with `?xdebug` to keep the X box visible, stretch the
+  deadlines, and log every message the timeline document sends to the console.
 
 ## TODO for the sisters ✿
 

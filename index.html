@@ -137,8 +137,8 @@
   /* social feed */
   .feed-card { padding: 1rem 1.1rem; }
   .feed-foot { text-align: center; margin: 0.9rem 0 0.2rem; }
-  /* clamped, not display:none — a hidden box has no layout, and we need to
-     measure the height of the iframe X puts inside it */
+  /* clamped, not display:none — the probe iframe must keep layout so the
+     timeline document inside it can lay itself out and report a real height */
   #x-embed { height: 0; overflow: hidden; }
   #x-embed.ready { height: auto; overflow: visible; }
 
@@ -230,16 +230,18 @@ const FEED_URL = "https://rss.buzzsprout.com/1752627.rss";
 const SHOW_URL = "https://otomeshimai.buzzsprout.com/";
 const BSKY_HANDLE = "otomeshimai.bsky.social";
 const X_HANDLE = "OtomeShimai";
-// How long to let X prove it can render before giving up. The clock starts
-// before widgets.js has even begun downloading, and a successful render is six
-// serial network legs deep (widgets.js → support frame → settings call →
-// timeline chunk → timeline document → its app and data) — the iframe reports
-// no height until the end of that chain. The wait is invisible either way:
-// Bluesky is already on screen and the X box only appears on success.
-const X_PROBE_MS = 15000;
+// X login cookies live on .x.com since the domain move, but old sessions on
+// .twitter.com are still honored — so the timeline document is requested from
+// each in turn, and the first host that answers with real posts wins.
+const X_EMBED_HOSTS = ["https://syndication.x.com", "https://syndication.twitter.com"];
+const X_EMBED_MAX_H = 650;    // maxHeight the timeline document is asked to fill
+const X_EMBED_MIN_REAL = 520; // reported heights below this are the ~400px refusal card
+const X_ATTEMPT_MS = 8000;    // per-host budget for the document to boot and report.
+// Generous, and invisible either way: Bluesky is already on screen and the X
+// box only appears on success.
 // Open the page with ?xdebug to watch the probe work: the X box is left
-// visible, the deadline is stretched, and each poll tick logs the iframe
-// height to the console.
+// visible, the deadline is stretched, and every message the timeline document
+// sends is logged to the console.
 const X_DEBUG = new URLSearchParams(location.search).has("xdebug");
 
 const PLAY_PATH = "M8 5v14l11-7z";
@@ -520,50 +522,53 @@ async function loadBlueskyFeed() {
 }
 
 // A page cannot ask whether a visitor is signed in to X — that's cross-origin and
-// there is no API for it. What it can do is let X try to render its timeline and
-// watch what happens. When X declines (logged-out visitors, or blocked third-party
-// cookies) it still injects an iframe but collapses it to 0px, and the promise
-// createTimeline() returns never settles either way — so neither can be relied on.
-// Polling the iframe's height, with a deadline, is the only signal that works.
-function probeXTimeline(host) {
+// there is no API for it. What it can do is load X's own timeline document (the
+// same one widgets.js puts in its iframe) and let the server answer: the document
+// is rendered server-side from whatever X cookies arrive with the request, so
+// signed-in visitors get their posts and everyone else gets the empty
+// "Nothing to see here" card. widgets.js itself is skipped on purpose — it is
+// hardwired to syndication.twitter.com, and since X moved logins to x.com most
+// signed-in visitors only carry .x.com cookies, which never reach a twitter.com
+// host. Loading the document straight from syndication.x.com sends the cookies
+// that actually exist. (syndication.twitter.com is tried second for anyone
+// still holding an old twitter.com session.)
+//
+// The document tells us how it went: it speaks JSON-RPC to its parent window
+// (initialized → results → rendered → resize), and the height in the resize
+// message classifies the outcome. The empty refusal card measures ~400px at
+// the probe width, while a timeline with actual posts fills its maxHeight cap
+// (X_EMBED_MAX_H) — so a report at or above X_EMBED_MIN_REAL means real posts.
+function probeXTimeline(host, embedHost, embedId) {
   return new Promise((resolve) => {
-    let settled = false, poll, deadline;
-    const finish = (rendered) => {
-      if (settled) return;
-      settled = true;
-      clearInterval(poll);
+    const frame = document.createElement("iframe");
+    frame.title = "X timeline";
+    // fixed probe width so the empty card's measured height is predictable;
+    // switched to the column width only after the probe succeeds
+    frame.style.cssText = "display:block;width:520px;height:0;border:0;";
+    frame.src = embedHost + "/srv/timeline-profile/screen-name/" + encodeURIComponent(X_HANDLE)
+      + "?embedId=" + embedId
+      + "&lang=en&maxHeight=" + X_EMBED_MAX_H + "px&showHeader=true&hideBorder=true"
+      + "&origin=" + encodeURIComponent(location.origin);
+
+    let deadline;
+    const done = (ok) => {
       clearTimeout(deadline);
-      resolve(rendered);
+      removeEventListener("message", onMsg);
+      if (!ok) frame.remove();
+      resolve(ok ? frame : null);
+    };
+    const onMsg = (e) => {
+      if (e.origin !== embedHost || e.source !== frame.contentWindow) return;
+      const rpc = e.data && e.data["twttr.embed"];
+      if (!rpc || rpc.id !== embedId) return;
+      if (X_DEBUG) console.log("[x-probe]", embedHost, rpc.method, JSON.stringify(rpc.params?.[0]).slice(0, 120));
+      if (rpc.method !== "twttr.private.resize") return;
+      done((rpc.params?.[0]?.height || 0) >= X_EMBED_MIN_REAL);
     };
 
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = "https://platform.twitter.com/widgets.js";
-    script.onerror = () => finish(false); // blocked by an extension, most likely
-    script.onload = () => {
-      if (!window.twttr || !window.twttr.ready) return finish(false);
-      window.twttr.ready(() => {
-        // No dnt flag: the timeline document is rendered server-side from the
-        // cookies that reach syndication.twitter.com, and X only fills it with
-        // posts for signed-in visitors — that IS cookie personalization, which
-        // dnt tells X not to do. With dnt on, even signed-in visitors get the
-        // empty signed-out document, so the whole X-when-logged-in idea
-        // depends on leaving it off.
-        window.twttr.widgets.createTimeline(
-          { sourceType: "profile", screenName: X_HANDLE },
-          host,
-          { height: 500 }
-        );
-      });
-    };
-    document.head.appendChild(script);
-
-    poll = setInterval(() => {
-      const frame = host.querySelector("iframe");
-      if (X_DEBUG) console.log("[x-probe]", frame ? "iframe height " + frame.getBoundingClientRect().height : "no iframe yet");
-      if (frame && frame.getBoundingClientRect().height > 100) finish(true);
-    }, 250);
-    deadline = setTimeout(() => finish(false), X_DEBUG ? 60000 : X_PROBE_MS);
+    addEventListener("message", onMsg);
+    host.appendChild(frame);
+    deadline = setTimeout(() => done(false), X_DEBUG ? 60000 : X_ATTEMPT_MS);
   });
 }
 
@@ -572,16 +577,27 @@ function probeXTimeline(host) {
 async function preferXFeed() {
   const host = document.getElementById("x-embed");
   if (X_DEBUG) { host.style.height = "auto"; host.style.outline = "2px dashed #1b8fd0"; }
-  if (!(await probeXTimeline(host))) {
-    if (X_DEBUG) { console.log("[x-probe] gave up — keeping Bluesky"); return; }
-    host.remove();
+  for (const [i, embedHost] of X_EMBED_HOSTS.entries()) {
+    const frame = await probeXTimeline(host, embedHost, "x-probe-" + i);
+    if (!frame) continue;
+    frame.style.width = "100%";
+    frame.style.height = X_EMBED_MAX_H + "px";
+    // the document re-reports its height when the width changes; track it
+    addEventListener("message", (e) => {
+      if (e.origin !== embedHost || e.source !== frame.contentWindow) return;
+      const rpc = e.data && e.data["twttr.embed"];
+      if (rpc && rpc.method === "twttr.private.resize" && rpc.params?.[0]?.height)
+        frame.style.height = rpc.params[0].height + "px";
+    });
+    host.classList.add("ready");
+    host.insertAdjacentHTML("beforeend",
+      `<p class="feed-foot"><a class="pill" href="https://twitter.com/${X_HANDLE}" target="_blank" rel="noopener">Follow us on X →</a></p>`);
+    document.getElementById("feed-box").remove();
+    document.getElementById("social-title").textContent = "Latest from X";
     return;
   }
-  host.classList.add("ready");
-  host.insertAdjacentHTML("beforeend",
-    `<p class="feed-foot"><a class="pill" href="https://twitter.com/${X_HANDLE}" target="_blank" rel="noopener">Follow us on X →</a></p>`);
-  document.getElementById("feed-box").remove();
-  document.getElementById("social-title").textContent = "Latest from X";
+  if (X_DEBUG) { console.log("[x-probe] gave up — keeping Bluesky"); return; }
+  host.remove();
 }
 
 loadLatestEpisode();
