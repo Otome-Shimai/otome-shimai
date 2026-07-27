@@ -1,16 +1,9 @@
 [
   {
-    "slug": "example-piofiore",
-    "type": "walkthrough",
-    "title": "Piofiore: Fated Memories",
-    "summary": "PLACEHOLDER — example walkthrough showing the format. Route order, chapter choices, and all endings.",
-    "date": "2026-07-20"
-  },
-  {
-    "slug": "example-virche",
-    "type": "walkthrough",
-    "title": "Virche Evermore: -ErroR:Salvation-",
-    "summary": "PLACEHOLDER — example walkthrough showing the format. Recommended play order and ending guide.",
-    "date": "2026-07-19"
+    "slug": "blogpost",
+    "type": "post",
+    "title": "NEWS ALERT - Otome Shimai website published!",
+    "summary": "First ever post on this website.",
+    "date": "2026-07-26"
   }
 ]
