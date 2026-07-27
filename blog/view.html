@@ -46,6 +46,15 @@
   article th, article td { border: 1px solid #d8ecfa; padding: 0.45rem 0.8rem; text-align: left; }
   article th { background: var(--sky-soft); font-family: var(--font-display); font-weight: 500; }
   article img { max-width: 100%; border-radius: 12px; }
+  /* a screenshot on its own line renders as a figure — see md.js */
+  article figure { margin: 1.6rem 0; text-align: center; }
+  article figure img { box-shadow: var(--shadow); }
+  article figcaption {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
   article hr { border: none; border-top: 2px dashed var(--sky-soft); margin: 2rem 0; }
   .backlink { margin: 1.5rem 0; display: inline-block; }
   @media (max-width: 640px) { article.card { padding: 1.4rem 1.2rem; } }
@@ -72,7 +81,7 @@
   <p style="margin:0;">✿ <a href="../">Back to Otome Shimai</a> ✿</p>
 </footer>
 
-<script src="../md.js?v=2"></script>
+<script src="../md.js?v=3"></script>
 <script>
 (async () => {
   const box = document.getElementById("content");

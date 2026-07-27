@@ -1,6 +1,12 @@
 /* md.js — tiny markdown → HTML renderer for walkthrough pages.
    Supports: headings, bold/italic/code, links, images, ul/ol lists (one nesting level),
-   blockquotes, hr, tables, fenced code blocks, paragraphs. Escapes raw HTML. */
+   blockquotes, hr, tables, fenced code blocks, paragraphs. Escapes raw HTML.
+
+   Images take an optional quoted title, which becomes a visible caption:
+   ![alt text](images/foo.png "Caption shown under the photo"). An image alone in its
+   own paragraph is rendered as <figure> (+ <figcaption> when it has a title); an image
+   inline in a sentence stays an <img>, with the title as its tooltip. Alt text is kept
+   separate from the caption so screen readers still get a description either way. */
 "use strict";
 
 function mdToHtml(src) {
@@ -8,13 +14,29 @@ function mdToHtml(src) {
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-  // inline formatting, applied to already-escaped text
-  const inline = s => s
-    .replace(/`([^`]+)`/g, (_, c) => "<code>" + c + "</code>")
-    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img src="$2" alt="$1">')
-    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>')
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  // the quoted title in ![alt](src "title") — escapeHtml has already turned its
+  // double quotes into &quot; by the time these patterns run
+  const IMG = new RegExp("!\\[([^\\]]*)\\]\\(([^)\\s]+)(?:\\s+&quot;(.*?)&quot;)?\\)", "g");
+
+  // inline formatting, applied to already-escaped text. `code spans` are lifted out
+  // first and put back last, so a post can show markup literally (a guide that writes
+  // `![alt](file.png)` in backticks means to print it, not to embed a picture).
+  const inline = s => {
+    const spans = [];
+    // the placeholder is NUL-delimited: no markdown source can contain one, so it
+    // cannot collide with ordinary prose the way a printable marker would
+    const held = s.replace(/`([^`]+)`/g, (_, c) => "\u0000" + (spans.push(c) - 1) + "\u0000");
+    return held
+      .replace(IMG, (_, alt, src, title) =>
+        '<img src="' + src + '" alt="' + alt + '"' + (title ? ' title="' + title + '"' : "") + ">")
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+      .replace(/\u0000(\d+)\u0000/g, (_, n) => "<code>" + spans[n] + "</code>");
+  };
+
+  // an image alone in a paragraph becomes a figure, so its title can be a real caption
+  const IMG_ONLY = /^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/;
 
   const lines = src.replace(/\r\n/g, "\n").split("\n");
   const out = [];
@@ -26,10 +48,19 @@ function mdToHtml(src) {
     while (listStack.length > depth) out.push("</" + listStack.pop() + ">");
   };
   const flushPara = () => {
-    if (para.length) {
-      out.push("<p>" + inline(escapeHtml(para.join(" "))) + "</p>");
-      para = [];
+    if (!para.length) return;
+    const text = para.join(" ");
+    const img = text.match(IMG_ONLY);
+    if (img) {
+      const [, alt, src, caption] = img;
+      out.push("<figure>" +
+        '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt) + '">' +
+        (caption ? "<figcaption>" + inline(escapeHtml(caption)) + "</figcaption>" : "") +
+        "</figure>");
+    } else {
+      out.push("<p>" + inline(escapeHtml(text)) + "</p>");
     }
+    para = [];
   };
   const flush = () => { flushPara(); closeLists(); };
 

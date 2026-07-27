@@ -2,6 +2,11 @@
 
 > **✏️ This is a placeholder walkthrough.** It exists to show the format — replace this
 > file's content with your real guide, and update the matching entry in `posts.json`.
+>
+> **Screenshots:** put the image file in `blog/images/`, then write
+> `![what the picture shows](images/your-file.png "Caption under the photo")`.
+> The bit in square brackets is the description screen readers announce; the bit in
+> quotes is the caption everyone sees, and it's optional.
 
 Welcome to our walkthrough for **Piofiore: Fated Memories**! Below is the structure we
 use for our guides: a spoiler-light intro, recommended route order, then a
