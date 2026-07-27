@@ -5,7 +5,7 @@ about/intro, the latest blog post (walkthroughs included), a player for the late
 episode (pulled live from the Buzzsprout RSS feed in the browser), a social feed
 (X when it will render, otherwise Bluesky), streaming links, and socials. No server
 and no build step — plain HTML/CSS/JS,
-deployable to any static host. Live at https://pixelpixi.github.io/otome-shimai/
+deployable to any static host.
 (deploys automatically on push to `main`).
 
 ## Preview locally
