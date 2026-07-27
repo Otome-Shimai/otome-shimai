@@ -14,14 +14,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
-  /* hero: the Buzzsprout banner on its exact background blue, so it blends edge-to-edge.
-     The blue padding-bottom matches the intro card's negative margin, so the card
-     overlaps plain blue — never the artwork — at any viewport width. */
-  :root { --overlap: 48px; }
+  /* hero: the banner on its exact background blue (#23b4ff = --sky), so it blends
+     edge-to-edge and the gutters beside the 1500px-capped image are invisible.
+     There is no blue strip under it — the intro card cuts into the artwork itself,
+     by the same 10% of the banner's height at every width.
+
+     Keeping that constant takes some care, because the flowers run right down to the
+     banner's bottom corners: only the middle of its bottom edge is clear of them —
+     native x 193–1727, i.e. 79.9% of 1920. So the intro card is capped at 77% of the
+     banner's width and centred, which keeps its top corners ~28px (native) clear of
+     the flowers at any viewport, instead of the card having to drop away from the art.
+     Above ~1117px the .wrap's own 860px is already inside that cap and nothing is
+     inset; below it the card is narrower than the cards beneath it (289px vs 335px at
+     375px wide).
+
+     If the banner art changes, retune 3.84 (its aspect), 0.77 (the clear fraction of
+     its bottom edge, with margin) and 0.1 (its clear bottom band, measured 12.6%). */
+  :root {
+    --banner-w: min(100vw, 1500px);
+    --overlap: calc(var(--banner-w) / 3.84 * 0.1);
+  }
   .hero {
     background: var(--sky);
     text-align: center;
-    padding-bottom: var(--overlap);
   }
   .hero img.banner {
     display: block;
@@ -30,12 +45,14 @@
     margin: 0 auto;
   }
 
-  /* intro card overlapping the hero */
+  /* intro card cut into the bottom of the banner, held inside the clear middle of the
+     banner's bottom edge so its top corners never land on the flowers */
   .intro {
     display: flex;
     gap: 1.8rem;
     align-items: center;
-    margin-top: calc(-1 * var(--overlap));
+    max-width: calc(var(--banner-w) * 0.77);
+    margin: calc(-1 * var(--overlap)) auto 0;
     position: relative;
   }
   .intro .cover {
@@ -58,7 +75,7 @@
   .intro p.about { margin: 0; }
 
   @media (max-width: 640px) {
-    :root { --overlap: 34px; }
+    /* --overlap needs no override: it already tracks the image height */
     .intro { flex-direction: column; text-align: center; }
     .intro .cover { width: 170px; height: 170px; }
     .intro h1 { font-size: 2rem; }

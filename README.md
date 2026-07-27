@@ -38,7 +38,7 @@ re-upload / git push to publish the change.)
 | Footer disclaimer text | `index.html` — the `<p class="disclaimer">` in the footer |
 | Blog posts & walkthroughs | `blog/*.md` + `blog/posts.json` (see below) |
 | Social feed accounts | `index.html` — the `BSKY_HANDLE` and `X_HANDLE` constants at the top of the script |
-| Cover art / banner image | Replace `assets/cover.jpg` (square) / `assets/header.png` (wide, flat `#23b4ff` background so it blends). Then run `python make-icons.py` to refresh the favicon/app icons |
+| Cover art / banner image | Replace `assets/cover.jpg` (square) / `assets/header.png` (wide, flat `#23b4ff` background so it blends). The intro card cuts into the banner's bottom edge, so three numbers in `index.html`'s hero comment are measured from the art and need retuning if it changes: its aspect (`3.84`), how much of its bottom edge is clear of art across the middle (`0.77`), and how deep that clear band is (`0.1`). Keeping the bottom ~13% clear edge-to-edge would let all three go back to defaults. Then run `python make-icons.py` to refresh the favicon/app icons |
 | Colors / fonts | `shared.css` — the `:root { --sky: … }` block at the top |
 | App name when installed as PWA | `manifest.webmanifest` |
 | The featured episode | Nothing — the newest episode in the Buzzsprout RSS feed is picked up automatically, along with its number, runtime and show notes. Everything older is reached through the "All episodes on Buzzsprout" link |
