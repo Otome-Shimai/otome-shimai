@@ -1,9 +1,9 @@
 # The Prince of Tennis Sweet School Festival ~♡-40 and more...~ Guide
 
 ![Gakuensai no Oujisama game art](images/gakupuri.jpg "Gakuensai no Oujisama ♡-40 and more... ")
-```
-Welcome to our walkthrough for The Prince of Tennis Sweet School Festival ~♡-40 and more...~ or as we lovingly call it GakuPuri!  Here you’ll find links to a guide on how to play the game (i.e. menus, maps and minigames) and links to the guides for each individual love interest’s route. Now go serve up some fun and ace your romance with each LI!
-```
+
+Welcome to our walkthrough for The Prince of Tennis Sweet School Festival \~♡-40 and more...~ or as we lovingly call it GakuPuri!  Here you’ll find links to a guide on how to play the game (i.e. menus, maps and minigames) and links to the guides for each individual love interest’s route. Now go serve up some fun and ace your romance with each LI!
+
 ---
 ## **Gameplay (Start Here!)**
 ## <span style="color:#5a5ccc"><strong>Seishun Gakuen Junior High School</strong></span>
