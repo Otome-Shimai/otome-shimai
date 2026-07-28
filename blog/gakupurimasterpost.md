@@ -1,4 +1,4 @@
-# The Prince of Tennis Sweet School Festival ~♡-40 and more...~ Guide
+# The Prince of Tennis Sweet School Festival \~♡-40 and more...~ Guide
 
 ![Gakuensai no Oujisama game art](images/gakupuri.jpg "Gakuensai no Oujisama ♡-40 and more... ")
 
