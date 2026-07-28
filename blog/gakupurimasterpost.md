@@ -8,7 +8,7 @@ Welcome to our walkthrough for The Prince of Tennis Sweet School Festival \~♡-
 
 ---
 ## **Gameplay (Start Here!)**
-## <span style="color:#5a5ccc"><strong>Seishun Gakuen Junior High School</strong></span>
+## Seishun Gakuen Junior High School
 
 Ryoma Echizen
 
@@ -27,7 +27,7 @@ Takeshi Momoshiro
 Kaoru Kaidoh
 
 
-## <span style="color:#587d95"><strong>Hyōtei Gakuen Junior High School</strong></span>
+## Hyōtei Gakuen Junior High School
 
 Keigo Atobe
 
@@ -44,7 +44,7 @@ Wakashi Hiyoshi
 Jiroh Akutagawa
 
 
-## <span style="color:#cab135"><strong>Rikkai University Junior High School</strong></span>
+## Rikkai University Junior High School
 
 Akaya Kirihara
 
@@ -61,7 +61,7 @@ Hiroshi Yagyu
 Seiichi Yukimura
 
 
-## <span style="color:#646464"><strong>Fudomine Junior High School</strong></span>
+## Fudomine Junior High School
 
 Kippei Tachibana
 
@@ -70,7 +70,7 @@ Akira Kamio
 Shinji Ibu
 
 
-## <span style="color:#81474a"><strong>Rokkaku Junior High School</strong></span>
+## Rokkaku Junior High School
 
 Hikaru Amane
 
@@ -79,7 +79,7 @@ Kojiroh Saeki
 Harukaze Kurobane
 
 
-## <span style="color:#5c8160"><strong>Yamabuki Junior High School</strong></span>
+## Yamabuki Junior High School
 
 Jin Akutsu
 
@@ -88,7 +88,7 @@ Kiyosumi Sengoku
 Taichi Dan
 
 
-## <span style="color:#5e4f4b"><strong>St. Rudolph Gakuin Junior High School</strong></span>
+## St. Rudolph Gakuin Junior High Schoo
 
 Yoshiroh Akazawa
 
@@ -97,7 +97,7 @@ Hajime Mizuki
 Yuta Fuji
 
 
-## <span style="color:#89b16e"><strong>Shitenhoji Junior High School</strong></span>
+## Shitenhoji Junior High School
 
 Kuranosuke Shiraishi
 
