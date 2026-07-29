@@ -18,23 +18,23 @@ NOTE - When using a controller on the Steam deck, B or O is used as the button t
 At the beginning and end of each day your bedroom acts as a Menu where you can Save/Load or Check Affection among other options. Once you are done with the day in the evening, select “Next Day” to move on.
 ## Game Timeline
 
-8/20 - Meet your team
-8/21 - N/A
-8/22-8/27 - Festival preparation
-8/28 - Holiday
-8/29-8/30 - Festival Preparation
-8/31 - Holiday
-9/1 - Festival Preparation
-9/2 - Special Event
-9/3-9/4 - Festival!
+- 8/20 - Meet your team
+- 8/21 - N/A
+- 8/22-8/27 - Festival preparation
+- 8/28 - Holiday
+- 8/29-8/30 - Festival Preparation
+- 8/31 - Holiday
+- 9/1 - Festival Preparation
+- 9/2 - Special Event
+- 9/3-9/4 - Festival!
 ## Maps
 
-Main Building
-Indoor Court
-Stall Area
-Square
-Stage
-Pool - Closed except on 9/2
+- Main Building
+- Indoor Court
+- Stall Area
+- Square
+- Stage
+- Pool - Closed except on 9/2
 ## Map Options
 
 You will be able to “Look” multiple times and “Chat” 1 to 3 times per time period every day, so you’ll need to speak to more guys than just the LI you are going for. 
