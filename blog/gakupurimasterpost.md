@@ -7,7 +7,8 @@ Welcome to our walkthrough for The Prince of Tennis Sweet School Festival ~♡-4
 (Note this page will be updated as we continue to create and add guides)
 
 ---
-## **Gameplay (Start Here!)**
+## **[Gameplay (Start Here!)](https://otomeshimai.com/blog/view.html?post=gakupurigameplayguide)**
+
 ## Seishun Gakuen Junior High School
 
 Ryoma Echizen
