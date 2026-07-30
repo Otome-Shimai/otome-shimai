@@ -1,6 +1,6 @@
 /* Otome Shimai service worker — caches the app shell for offline use.
    Never caches cross-origin requests (RSS feed, fonts) — those stay live. */
-const CACHE = "otome-shimai-v5";
+const CACHE = "otome-shimai-v6";
 const SHELL = [
   "./",
   "index.html",

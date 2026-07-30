@@ -56,6 +56,21 @@
     margin-top: 0.5rem;
   }
   article hr { border: none; border-top: 2px dashed var(--sky-soft); margin: 2rem 0; }
+  article h5 { font-size: 1.02rem; margin-top: 1.2rem; }
+  article h6 { font-size: 0.95rem; margin-top: 1.2rem; color: var(--muted); }
+  /* task-list items render as real (disabled) checkboxes — see md.js */
+  article li.task-list-item { list-style: none; margin-left: -1.35em; }
+  article li.task-list-item input { margin-right: 0.4em; accent-color: var(--sky); }
+  article kbd {
+    background: var(--sky-soft);
+    border: 1px solid #d8ecfa;
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    padding: 0.05em 0.4em;
+    font-size: 0.85em;
+  }
+  article .footnotes { font-size: 0.88rem; color: var(--muted); }
+  article .footnotes hr { margin: 2.5rem 0 0.8rem; }
   .backlink { margin: 1.5rem 0; display: inline-block; }
   @media (max-width: 640px) { article.card { padding: 1.4rem 1.2rem; } }
 </style>
@@ -81,7 +96,7 @@
   <p style="margin:0;">✿ <a href="../">Back to Otome Shimai</a> ✿</p>
 </footer>
 
-<script src="../md.js?v=3"></script>
+<script src="../md.js?v=4"></script>
 <script>
 (async () => {
   const box = document.getElementById("content");
