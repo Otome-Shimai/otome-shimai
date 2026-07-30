@@ -34,7 +34,7 @@ re-upload / git push to publish the change.)
 | Page title / tab title | `index.html` — the `<title>` tag and `<meta name="description">` near the top |
 | Podcast name, subtitle, about text | `index.html` — the `<section class="intro">` block (plain HTML text) |
 | Streaming links (Spotify, YouTube Music, …) | `index.html` — the "Also listen on" pills inside the episode card, in the `loadLatestEpisode()` template. Each is one `<a class="pill">` line: copy a line to add a platform, delete a line to remove one |
-| Social links (Instagram, Twitter, Bluesky, Ko-fi) | `index.html` — the `<footer>` block, same one-line-per-link pattern |
+| Social links (Instagram, Twitter, Bluesky, Twitch, Ko-fi) | `index.html` — the `<footer>` block, same one-line-per-link pattern |
 | Footer disclaimer text | `index.html` — the `<p class="disclaimer">` in the footer |
 | Blog posts & walkthroughs | `blog/*.md` + `blog/posts.json` (see below) |
 | Social feed accounts | `index.html` — the `BSKY_HANDLE` and `X_HANDLE` constants at the top of the script |
