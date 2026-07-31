@@ -11,12 +11,22 @@ Morning greeting: “Good morning!”
 | **Day** | **Square**   | **Chat** | **“Now I’m curious…what breed is it?”** !!Special Topic “Karupin” unlocked |
 | Evening | Indoor Court | Chat     | Any Topic (cannot choose “Karupin” yet)                                    |
 
+- Morning: Indoor Court → Chat → Any Topic
+- **Day: Square → Chat → “Now I’m curious…what breed is it?”** *Special Topic “Karupin” unlocked*
+- Evening: Indoor Court → Chat →  Any Topic (cannot choose “Karupin” yet)
+
+
 # 8/23
 
 | Morning | Indoor Court  | Chat     | Any Topic (Karupin option is open from now) |
 | ------- | ------------- | -------- | ------------------------------------------- |
 | **Day** | **Square**    | **Look** | **“Wake him up”**                           |
 | Evening | Main Building | Chat     | Any Topic                                   |
+
+- Morning: Indoor Court → Chat → Any Topic (Karupin option now available)
+- **Day: Square → Look → “Wake him up”**
+- Evening: Main Building → Chat → Any Topic
+
 
 # 8/24
 
