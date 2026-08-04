@@ -1,7 +1,7 @@
 
 # The Prince of Tennis Sweet School Festival \~♡-40 and more...~ General Gameplay Guide
 
-[The Prince of Tennis Sweet School Festival ~♡-40 and more...~ Guide Homepage](https://otomeshimai.com/blog/view.html?post=gakupurimasterpost))
+[The Prince of Tennis Sweet School Festival ~♡-40 and more...~ Guide Homepage](https://otomeshimai.com/blog/view.html?post=gakupurimasterpost)
 
 NOTE - When using a controller on the Steam deck, B or O is used as the button to select your options. Using X or ▢ acts as a “back” button. 
 (Please let us know if this is the same on Switch/Switch 2)
