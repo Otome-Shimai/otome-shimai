@@ -7,6 +7,7 @@ Necessary interactions are in **bold**, non-bold interactions are optional but r
 NOTE: Ryoma has different versions of CGs that you can get on a second playthrough, this guide will be updated at a later date to include what is needed to unlock those. Right now we’re just trying to get everyone’s guide published!
 
 Morning greeting: “Good morning!”
+---
 
 # 8/22
 
