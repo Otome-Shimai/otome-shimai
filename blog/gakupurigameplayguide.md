@@ -1,5 +1,5 @@
 
-# The Prince of Tennis Sweet School Festival /~♡-40 and more...~ General Gameplay Guide
+# The Prince of Tennis Sweet School Festival \~♡-40 and more...~ General Gameplay Guide
 
 [The Prince of Tennis Sweet School Festival ~♡-40 and more...~ Guide Homepage](https://otomeshimai.com/blog/view.html?post=gakupurimasterpost))
 
