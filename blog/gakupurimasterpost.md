@@ -13,7 +13,7 @@ Welcome to our walkthrough for The Prince of Tennis Sweet School Festival \~♡-
 
 [Ryoma Echizen](https://otomeshimai.com/blog/view.html?post=ryoumawalkthrough)
 
-Kunimitsu Tezuka
+[Kunimitsu Tezuka](https://otomeshimai.com/blog/view.html?post=tezukawalkthrough)
 
 Shuichiroh Oishi
 
