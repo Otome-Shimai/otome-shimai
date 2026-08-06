@@ -40,6 +40,8 @@ Morning greeting: “Good morning!”
 - **Morning:  Main Building → Look** → Chat → Any Topic
 - Day:  Square → Chat → Any Topic
 - **Evening:  Square → Look (at Kintaroh Toyama)** → Indoor Court  → Chat → Any Topic
+- 
+  ‼️Your tennis boy will call asking you on a date. Tell him you’re free tomorrow!
 ## 8/28
 
 **:two_hearts:** **DATE DAY: “What?! Oh no!” → “The miso mackerel meal.”**
@@ -53,6 +55,8 @@ Morning greeting: “Good morning!”
 - **Morning:  Main Building → Look**
 - Day:  Main Building → “Sure” or Chat → Any Topic
 - **Evening:  Square → Chat → Auto**
+
+  ‼️Your tennis boy will call asking you on a date. Tell him you’re free tomorrow!
 ## 8/31
 
 **:two_hearts:** **DATE DAY: Any Choice**
