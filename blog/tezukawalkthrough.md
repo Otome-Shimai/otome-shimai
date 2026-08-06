@@ -5,7 +5,7 @@ Necessary interactions are in **bold**, non-bold interactions are optional but r
 
 Morning greeting: “Hey, good morning\!”
 
-— 
+---
 
 ## 8/22
 
