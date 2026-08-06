@@ -11,7 +11,7 @@ Welcome to our walkthrough for The Prince of Tennis Sweet School Festival \~♡-
 
 ##  <span style="color:#5a5ccc">Seishun Gakuen Junior High School</span>
 
-Ryoma Echizen
+[Ryoma Echizen](https://otomeshimai.com/blog/view.html?post=ryoumawalkthrough)
 
 Kunimitsu Tezuka
 
