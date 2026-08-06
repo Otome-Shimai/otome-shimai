@@ -19,7 +19,7 @@ Welcome to our walkthrough for The Prince of Tennis Sweet School Festival \~♡-
 
 [Syusuke Fuji](https://otomeshimai.com/blog/view.html?post=syusukefujiwalkthrough)
 
-Takashi Kawamura
+[Takashi Kawamura](https://otomeshimai.com/blog/view.html?post=kawamurawalkthrough)
 
 Sadaharu Inui
 
